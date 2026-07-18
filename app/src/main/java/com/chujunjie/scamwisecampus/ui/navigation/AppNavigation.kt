@@ -6,7 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.chujunjie.scamwisecampus.ui.screens.home.HomeScreen
-import com.chujunjie.scamwisecampus.ui.screens.practice.PracticeScreen
+import com.chujunjie.scamwisecampus.ui.screens.practice.PracticeRoute
 import com.chujunjie.scamwisecampus.ui.screens.settings.SettingsScreen
 import com.chujunjie.scamwisecampus.ui.screens.statistics.StatisticsScreen
 
@@ -41,7 +41,7 @@ fun AppNavigation(
         }
 
         composable(AppRoute.Practice.route) {
-            PracticeScreen()
+            PracticeRoute()
         }
 
         composable(AppRoute.Statistics.route) {
