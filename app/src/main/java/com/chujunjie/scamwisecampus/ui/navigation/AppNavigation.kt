@@ -12,6 +12,7 @@ import com.chujunjie.scamwisecampus.ui.screens.statistics.StatisticsScreen
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.chujunjie.scamwisecampus.ui.screens.scenario.ScenarioActivityRoute
+import androidx.navigation.NavGraph.Companion.findStartDestination
 
 @Composable
 fun AppNavigation(
@@ -86,6 +87,33 @@ fun AppNavigation(
                         route = AppRoute.Practice.route,
                         inclusive = false
                     )
+                },
+                onReturnHome = {
+                    navController.navigate(AppRoute.Home.route) {
+                        popUpTo(
+                            navController.graph
+                                .findStartDestination()
+                                .id
+                        )
+
+                        launchSingleTop = true
+                    }
+                },
+                onViewStatistics = {
+                    navController.navigate(
+                        AppRoute.Statistics.route
+                    ) {
+                        popUpTo(
+                            navController.graph
+                                .findStartDestination()
+                                .id
+                        ) {
+                            saveState = true
+                        }
+
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 }
             )
         }

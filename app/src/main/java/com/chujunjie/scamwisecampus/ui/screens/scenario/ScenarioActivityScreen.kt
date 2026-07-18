@@ -14,7 +14,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -23,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.chujunjie.scamwisecampus.domain.model.ActionOption
-import com.chujunjie.scamwisecampus.domain.model.ConfidenceCalibration
 import com.chujunjie.scamwisecampus.domain.model.ConfidenceLevel
 import com.chujunjie.scamwisecampus.domain.model.RiskLevel
 import com.chujunjie.scamwisecampus.domain.model.WarningSign
@@ -41,6 +39,8 @@ fun ScenarioActivityScreen(
     onRestart: () -> Unit,
     onBack: () -> Unit,
     onReturnToPractice: () -> Unit,
+    onReturnHome: () -> Unit,
+    onViewStatistics: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scenario = uiState.scenario
@@ -63,12 +63,23 @@ fun ScenarioActivityScreen(
         }
 
         uiState.evaluation != null -> {
-            CompletionContent(
-                score = uiState.evaluation.totalScore,
-                calibration =
-                    uiState.evaluation.confidenceCalibration,
+            ScenarioResultScreen(
+                scenario = scenario,
+                selectedRiskLevel =
+                    requireNotNull(uiState.selectedRiskLevel),
+                selectedWarningSignIds =
+                    uiState.selectedWarningSignIds,
+                hasSelectedNoWarningSigns =
+                    uiState.hasSelectedNoWarningSigns,
+                selectedActionId =
+                    requireNotNull(uiState.selectedActionId),
+                selectedConfidenceLevel =
+                    requireNotNull(uiState.selectedConfidenceLevel),
+                evaluation =
+                    uiState.evaluation,
                 onRestart = onRestart,
-                onReturnToPractice = onReturnToPractice,
+                onReturnHome = onReturnHome,
+                onViewStatistics = onViewStatistics,
                 modifier = modifier
             )
         }
@@ -418,58 +429,6 @@ private fun CheckboxRow(
 }
 
 @Composable
-private fun CompletionContent(
-    score: Int,
-    calibration: ConfidenceCalibration,
-    onRestart: () -> Unit,
-    onReturnToPractice: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Practice Complete",
-            style = MaterialTheme.typography.headlineMedium
-        )
-
-        Text(
-            text = "$score / 100",
-            style = MaterialTheme.typography.displaySmall,
-            modifier = Modifier.padding(top = 16.dp)
-        )
-
-        Text(
-            text = calibration.displayName(),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(top = 12.dp)
-        )
-
-        Button(
-            onClick = onRestart,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 24.dp)
-        ) {
-            Text(text = "Try Again")
-        }
-
-        OutlinedButton(
-            onClick = onReturnToPractice,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp)
-        ) {
-            Text(text = "Return to Practice")
-        }
-    }
-}
-
-@Composable
 private fun MessageContent(
     message: String,
     modifier: Modifier = Modifier,
@@ -547,24 +506,5 @@ private fun ConfidenceLevel.displayName(): String {
 
         ConfidenceLevel.VERY_CONFIDENT ->
             "Very Confident"
-    }
-}
-
-private fun ConfidenceCalibration.displayName(): String {
-    return when (this) {
-        ConfidenceCalibration.WELL_CALIBRATED ->
-            "Well Calibrated"
-
-        ConfidenceCalibration.UNDERCONFIDENT ->
-            "Underconfident"
-
-        ConfidenceCalibration.OVERCONFIDENT ->
-            "Overconfident"
-
-        ConfidenceCalibration.NEEDS_REVIEW ->
-            "Needs Review"
-
-        ConfidenceCalibration.CAUTIOUS_BUT_INCORRECT ->
-            "Cautious but Incorrect"
     }
 }

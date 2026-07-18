@@ -11,6 +11,8 @@ fun ScenarioActivityRoute(
     scenarioId: String,
     onNavigateBack: () -> Unit,
     onReturnToPractice: () -> Unit,
+    onReturnHome: () -> Unit,
+    onViewStatistics: () -> Unit,
     viewModel: ScenarioActivityViewModel = koinViewModel(
         parameters = {
             parametersOf(scenarioId)
@@ -37,6 +39,8 @@ fun ScenarioActivityRoute(
                 onNavigateBack()
             }
         },
-        onReturnToPractice = onReturnToPractice
+        onReturnToPractice = onReturnToPractice,
+        onReturnHome = onReturnHome,
+        onViewStatistics = onViewStatistics
     )
 }
