@@ -9,6 +9,9 @@ import com.chujunjie.scamwisecampus.ui.screens.home.HomeScreen
 import com.chujunjie.scamwisecampus.ui.screens.practice.PracticeRoute
 import com.chujunjie.scamwisecampus.ui.screens.settings.SettingsScreen
 import com.chujunjie.scamwisecampus.ui.screens.statistics.StatisticsScreen
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import com.chujunjie.scamwisecampus.ui.screens.scenario.ScenarioActivityRoute
 
 @Composable
 fun AppNavigation(
@@ -41,7 +44,15 @@ fun AppNavigation(
         }
 
         composable(AppRoute.Practice.route) {
-            PracticeRoute()
+            PracticeRoute(
+                onScenarioClick = { scenarioId ->
+                    navController.navigate(
+                        AppRoute.ScenarioActivity.createRoute(
+                            scenarioId = scenarioId
+                        )
+                    )
+                }
+            )
         }
 
         composable(AppRoute.Statistics.route) {
@@ -50,6 +61,33 @@ fun AppNavigation(
 
         composable(AppRoute.Settings.route) {
             SettingsScreen()
+        }
+
+        composable(
+            route = AppRoute.ScenarioActivity.route,
+            arguments = listOf(
+                navArgument(AppRoute.SCENARIO_ID_ARGUMENT) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val scenarioId =
+                backStackEntry.arguments
+                    ?.getString(AppRoute.SCENARIO_ID_ARGUMENT)
+                    .orEmpty()
+
+            ScenarioActivityRoute(
+                scenarioId = scenarioId,
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onReturnToPractice = {
+                    navController.popBackStack(
+                        route = AppRoute.Practice.route,
+                        inclusive = false
+                    )
+                }
+            )
         }
     }
 }

@@ -31,6 +31,7 @@ fun PracticeScreen(
     onCategorySelected: (ScamCategory?) -> Unit,
     onDifficultySelected: (Difficulty?) -> Unit,
     onClearFilters: () -> Unit,
+    onScenarioClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (uiState.isLoading) {
@@ -115,6 +116,7 @@ fun PracticeScreen(
         } else {
             ScenarioList(
                 scenarios = uiState.scenarios,
+                onScenarioClick = onScenarioClick,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -220,6 +222,7 @@ private fun DifficultyFilterRow(
 @Composable
 private fun ScenarioList(
     scenarios: List<Scenario>,
+    onScenarioClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -232,7 +235,10 @@ private fun ScenarioList(
             key = { scenario -> scenario.id }
         ) { scenario ->
             ScenarioCard(
-                scenario = scenario
+                scenario = scenario,
+                onClick = {
+                    onScenarioClick(scenario.id)
+                }
             )
         }
     }
@@ -241,9 +247,11 @@ private fun ScenarioList(
 @Composable
 private fun ScenarioCard(
     scenario: Scenario,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     ElevatedCard(
+        onClick = onClick,
         modifier = modifier.fillMaxWidth()
     ) {
         Column(

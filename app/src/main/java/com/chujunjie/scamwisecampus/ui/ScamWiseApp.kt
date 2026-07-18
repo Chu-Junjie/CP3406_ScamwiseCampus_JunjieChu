@@ -18,23 +18,32 @@ fun ScamWiseApp() {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-
+    val shouldShowBottomBar =
+        topLevelDestinations.any { destination ->
+            destination.route == currentRoute
+        }
     Scaffold(
         bottomBar = {
-            ScamWiseBottomBar(
-                destinations = topLevelDestinations,
-                currentRoute = currentRoute,
-                onDestinationClick = { destination ->
-                    navController.navigate(destination.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
+            if (shouldShowBottomBar) {
+                ScamWiseBottomBar(
+                    destinations = topLevelDestinations,
+                    currentRoute = currentRoute,
+                    onDestinationClick = { destination ->
+                        navController.navigate(destination.route) {
+                            popUpTo(
+                                navController.graph
+                                    .findStartDestination()
+                                    .id
+                            ) {
+                                saveState = true
+                            }
 
-                        launchSingleTop = true
-                        restoreState = true
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     ) { innerPadding ->
         AppNavigation(

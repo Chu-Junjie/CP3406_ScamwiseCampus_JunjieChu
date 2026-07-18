@@ -7,6 +7,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun PracticeRoute(
+    onScenarioClick: (String) -> Unit,
     viewModel: PracticeViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -15,6 +16,7 @@ fun PracticeRoute(
         uiState = uiState,
         onCategorySelected = viewModel::selectCategory,
         onDifficultySelected = viewModel::selectDifficulty,
-        onClearFilters = viewModel::clearFilters
+        onClearFilters = viewModel::clearFilters,
+        onScenarioClick = onScenarioClick
     )
 }
