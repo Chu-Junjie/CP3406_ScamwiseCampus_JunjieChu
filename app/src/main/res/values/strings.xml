@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ScamWise Campus</string>
+
+    <string name="navigation_home">Home</string>
+    <string name="navigation_practice">Practice</string>
+    <string name="navigation_statistics">Statistics</string>
+    <string name="navigation_settings">Settings</string>
 </resources>
