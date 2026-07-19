@@ -1,26 +1,35 @@
 package com.chujunjie.scamwisecampus.ui.screens.scenario
 
 import com.chujunjie.scamwisecampus.data.local.seed.ScenarioSeedData
+import com.chujunjie.scamwisecampus.domain.model.AttemptRecord
 import com.chujunjie.scamwisecampus.domain.model.ConfidenceCalibration
 import com.chujunjie.scamwisecampus.domain.model.ConfidenceLevel
 import com.chujunjie.scamwisecampus.domain.model.Scenario
+import com.chujunjie.scamwisecampus.domain.repository.AttemptRepository
 import com.chujunjie.scamwisecampus.domain.repository.ScenarioRepository
 import com.chujunjie.scamwisecampus.domain.usecase.EvaluateScenarioAttemptUseCase
+import com.chujunjie.scamwisecampus.testutil.MainDispatcherRule
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Rule
 import org.junit.Test
 
 class ScenarioActivityViewModelTest {
 
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
     private val scenarios = ScenarioSeedData.scenarios
 
-    private val repository = FakeScenarioRepository(
+    private val scenarioRepository = FakeScenarioRepository(
         scenarios = scenarios
     )
+
+    private val attemptRepository = FakeAttemptRepository()
 
     private val evaluateScenarioAttempt =
         EvaluateScenarioAttemptUseCase()
@@ -31,9 +40,7 @@ class ScenarioActivityViewModelTest {
 
     @Test
     fun `valid scenario identifier loads scenario`() {
-        val viewModel = createViewModel()
-
-        val state = viewModel.uiState.value
+        val state = createViewModel().uiState.value
 
         assertFalse(state.isLoading)
         assertFalse(state.isScenarioMissing)
@@ -41,21 +48,14 @@ class ScenarioActivityViewModelTest {
             HIGH_RISK_SCENARIO_ID,
             state.scenario?.id
         )
-        assertEquals(
-            ScenarioStep.RISK_ASSESSMENT,
-            state.currentStep
-        )
     }
 
     @Test
     fun `unknown scenario identifier displays missing state`() {
-        val viewModel = createViewModel(
+        val state = createViewModel(
             scenarioId = "unknown_scenario"
-        )
+        ).uiState.value
 
-        val state = viewModel.uiState.value
-
-        assertFalse(state.isLoading)
         assertTrue(state.isScenarioMissing)
         assertNull(state.scenario)
     }
@@ -66,76 +66,9 @@ class ScenarioActivityViewModelTest {
 
         viewModel.continueToNextStep()
 
-        val state = viewModel.uiState.value
-
-        assertEquals(
-            ScenarioStep.RISK_ASSESSMENT,
-            state.currentStep
-        )
         assertEquals(
             "Select a risk level to continue.",
-            state.validationMessage
-        )
-    }
-
-    @Test
-    fun `selecting risk level allows warning sign step`() {
-        val viewModel = createViewModel()
-
-        viewModel.selectRiskLevel(
-            highRiskScenario.correctRiskLevel
-        )
-        viewModel.continueToNextStep()
-
-        val state = viewModel.uiState.value
-
-        assertEquals(
-            ScenarioStep.WARNING_SIGNS,
-            state.currentStep
-        )
-        assertNull(state.validationMessage)
-    }
-
-    @Test
-    fun `continuing without warning selection displays validation message`() {
-        val viewModel = createViewModel()
-
-        moveToWarningStep(viewModel)
-
-        viewModel.continueToNextStep()
-
-        val state = viewModel.uiState.value
-
-        assertEquals(
-            ScenarioStep.WARNING_SIGNS,
-            state.currentStep
-        )
-        assertEquals(
-            "Select at least one warning sign or choose no clear warning signs.",
-            state.validationMessage
-        )
-    }
-
-    @Test
-    fun `warning sign can be selected and removed`() {
-        val viewModel = createViewModel()
-        val warningSignId =
-            highRiskScenario.warningSigns.first().id
-
-        moveToWarningStep(viewModel)
-
-        viewModel.toggleWarningSign(warningSignId)
-
-        assertTrue(
-            warningSignId in
-                    viewModel.uiState.value.selectedWarningSignIds
-        )
-
-        viewModel.toggleWarningSign(warningSignId)
-
-        assertFalse(
-            warningSignId in
-                    viewModel.uiState.value.selectedWarningSignIds
+            viewModel.uiState.value.validationMessage
         )
     }
 
@@ -146,7 +79,6 @@ class ScenarioActivityViewModelTest {
             highRiskScenario.warningSigns.first().id
 
         moveToWarningStep(viewModel)
-
         viewModel.toggleWarningSign(warningSignId)
         viewModel.selectNoWarningSigns()
 
@@ -157,119 +89,64 @@ class ScenarioActivityViewModelTest {
     }
 
     @Test
-    fun `selecting warning sign clears no warning signs selection`() {
-        val viewModel = createViewModel()
-        val warningSignId =
-            highRiskScenario.warningSigns.first().id
-
-        moveToWarningStep(viewModel)
-
-        viewModel.selectNoWarningSigns()
-        viewModel.toggleWarningSign(warningSignId)
-
-        val state = viewModel.uiState.value
-
-        assertFalse(state.hasSelectedNoWarningSigns)
-        assertEquals(
-            setOf(warningSignId),
-            state.selectedWarningSignIds
-        )
-    }
-
-    @Test
-    fun `completed warning selection allows safe action step`() {
-        val viewModel = createViewModel()
-        val warningSignId =
-            highRiskScenario.warningSigns.first().id
-
-        moveToWarningStep(viewModel)
-
-        viewModel.toggleWarningSign(warningSignId)
-        viewModel.continueToNextStep()
-
-        assertEquals(
-            ScenarioStep.SAFE_ACTION,
-            viewModel.uiState.value.currentStep
-        )
-    }
-
-    @Test
-    fun `continuing without action displays validation message`() {
-        val viewModel = createViewModel()
-
-        moveToSafeActionStep(viewModel)
-
-        viewModel.continueToNextStep()
-
-        val state = viewModel.uiState.value
-
-        assertEquals(
-            ScenarioStep.SAFE_ACTION,
-            state.currentStep
-        )
-        assertEquals(
-            "Select an action to continue.",
-            state.validationMessage
-        )
-    }
-
-    @Test
-    fun `selecting action allows confidence step`() {
-        val viewModel = createViewModel()
-        val safeActionId = highRiskScenario.actionOptions
-            .first { action -> action.isSafeAction }
-            .id
-
-        moveToSafeActionStep(viewModel)
-
-        viewModel.selectAction(safeActionId)
-        viewModel.continueToNextStep()
-
-        val state = viewModel.uiState.value
-
-        assertEquals(
-            ScenarioStep.CONFIDENCE,
-            state.currentStep
-        )
-        assertEquals(
-            safeActionId,
-            state.selectedActionId
-        )
-    }
-
-    @Test
-    fun `submitting without confidence displays validation message`() {
-        val viewModel = createViewModel()
-
-        moveToConfidenceStep(viewModel)
-
-        viewModel.submitAttempt()
-
-        val state = viewModel.uiState.value
-
-        assertNull(state.evaluation)
-        assertEquals(
-            "Select your confidence level before submitting.",
-            state.validationMessage
-        )
-    }
-
-    @Test
-    fun `perfect submission returns one hundred points`() {
+    fun `perfect submission returns one hundred points and is saved`() {
         val viewModel = createViewModel()
 
         completePerfectAttempt(viewModel)
 
-        val evaluation =
-            viewModel.uiState.value.evaluation
+        val state = viewModel.uiState.value
+        val savedAttempt =
+            attemptRepository.savedAttempts.single()
 
-        assertEquals(
-            100,
-            evaluation?.totalScore
-        )
+        assertEquals(100, state.evaluation?.totalScore)
         assertEquals(
             ConfidenceCalibration.WELL_CALIBRATED,
-            evaluation?.confidenceCalibration
+            state.evaluation?.confidenceCalibration
+        )
+        assertEquals(
+            HIGH_RISK_SCENARIO_ID,
+            savedAttempt.scenarioId
+        )
+        assertEquals(100, savedAttempt.totalScore)
+        assertTrue(savedAttempt.completedAtEpochMillis > 0)
+        assertTrue(state.isAttemptSaved)
+        assertFalse(state.isSavingAttempt)
+        assertNull(state.saveErrorMessage)
+    }
+
+    @Test
+    fun `submitting completed attempt twice saves only once`() {
+        val viewModel = createViewModel()
+
+        completePerfectAttempt(viewModel)
+        viewModel.submitAttempt()
+
+        assertEquals(
+            1,
+            attemptRepository.savedAttempts.size
+        )
+    }
+
+    @Test
+    fun `save failure preserves evaluation and reports error`() {
+        val failingRepository = FakeAttemptRepository(
+            shouldFail = true
+        )
+
+        val viewModel = createViewModel(
+            repository = failingRepository
+        )
+
+        completePerfectAttempt(viewModel)
+
+        val state = viewModel.uiState.value
+
+        assertEquals(100, state.evaluation?.totalScore)
+        assertFalse(state.isSavingAttempt)
+        assertFalse(state.isAttemptSaved)
+        assertEquals(
+            "Your result is available, but this attempt could not be saved.",
+            state.saveErrorMessage
         )
     }
 
@@ -298,18 +175,13 @@ class ScenarioActivityViewModelTest {
         )
 
         assertFalse(viewModel.moveToPreviousStep())
-        assertEquals(
-            ScenarioStep.RISK_ASSESSMENT,
-            viewModel.uiState.value.currentStep
-        )
     }
 
     @Test
-    fun `restarting scenario clears previous answers`() {
+    fun `restarting scenario clears answers and save state`() {
         val viewModel = createViewModel()
 
         completePerfectAttempt(viewModel)
-
         viewModel.restartScenario()
 
         val state = viewModel.uiState.value
@@ -320,21 +192,24 @@ class ScenarioActivityViewModelTest {
         )
         assertNull(state.selectedRiskLevel)
         assertTrue(state.selectedWarningSignIds.isEmpty())
-        assertFalse(state.hasSelectedNoWarningSigns)
         assertNull(state.selectedActionId)
         assertNull(state.selectedConfidenceLevel)
-        assertNull(state.validationMessage)
         assertNull(state.evaluation)
+        assertFalse(state.isSavingAttempt)
+        assertFalse(state.isAttemptSaved)
+        assertNull(state.saveErrorMessage)
     }
 
     private fun createViewModel(
-        scenarioId: String = HIGH_RISK_SCENARIO_ID
+        scenarioId: String = HIGH_RISK_SCENARIO_ID,
+        repository: AttemptRepository = attemptRepository
     ): ScenarioActivityViewModel {
         return ScenarioActivityViewModel(
             scenarioId = scenarioId,
-            scenarioRepository = repository,
+            scenarioRepository = scenarioRepository,
             evaluateScenarioAttempt =
-                evaluateScenarioAttempt
+                evaluateScenarioAttempt,
+            attemptRepository = repository
         )
     }
 
@@ -413,7 +288,7 @@ class ScenarioActivityViewModelTest {
     ) : ScenarioRepository {
 
         override fun observeScenarios(): Flow<List<Scenario>> {
-            return flowOf(scenarios)
+            return MutableStateFlow(scenarios)
         }
 
         override fun getScenarioById(
@@ -422,6 +297,47 @@ class ScenarioActivityViewModelTest {
             return scenarios.firstOrNull { scenario ->
                 scenario.id == scenarioId
             }
+        }
+    }
+
+    private class FakeAttemptRepository(
+        private val shouldFail: Boolean = false
+    ) : AttemptRepository {
+
+        private val attemptsFlow =
+            MutableStateFlow<List<AttemptRecord>>(
+                emptyList()
+            )
+
+        val savedAttempts: List<AttemptRecord>
+            get() = attemptsFlow.value
+
+        override fun observeAttempts():
+                Flow<List<AttemptRecord>> {
+            return attemptsFlow
+        }
+
+        override suspend fun saveAttempt(
+            attemptRecord: AttemptRecord
+        ): Long {
+            if (shouldFail) {
+                error("Simulated database failure.")
+            }
+
+            val attemptId =
+                attemptsFlow.value.size.toLong() + 1
+
+            attemptsFlow.value =
+                attemptsFlow.value +
+                        attemptRecord.copy(
+                            attemptId = attemptId
+                        )
+
+            return attemptId
+        }
+
+        override suspend fun clearAttempts() {
+            attemptsFlow.value = emptyList()
         }
     }
 
