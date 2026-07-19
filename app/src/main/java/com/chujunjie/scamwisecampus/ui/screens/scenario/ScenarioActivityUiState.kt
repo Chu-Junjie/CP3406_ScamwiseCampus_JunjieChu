@@ -15,6 +15,9 @@ data class ScenarioActivityUiState(
     val selectedConfidenceLevel: ConfidenceLevel? = null,
     val validationMessage: String? = null,
     val evaluation: AttemptEvaluation? = null,
+    val isSavingAttempt: Boolean = false,
+    val isAttemptSaved: Boolean = false,
+    val saveErrorMessage: String? = null,
     val isLoading: Boolean = true,
     val isScenarioMissing: Boolean = false
 )

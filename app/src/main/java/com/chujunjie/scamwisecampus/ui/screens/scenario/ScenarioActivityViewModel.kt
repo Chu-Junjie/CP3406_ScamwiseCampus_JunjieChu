@@ -1,20 +1,27 @@
 package com.chujunjie.scamwisecampus.ui.screens.scenario
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.chujunjie.scamwisecampus.domain.model.AttemptEvaluation
+import com.chujunjie.scamwisecampus.domain.model.AttemptRecord
 import com.chujunjie.scamwisecampus.domain.model.ConfidenceLevel
 import com.chujunjie.scamwisecampus.domain.model.PracticeSubmission
 import com.chujunjie.scamwisecampus.domain.model.RiskLevel
+import com.chujunjie.scamwisecampus.domain.model.Scenario
+import com.chujunjie.scamwisecampus.domain.repository.AttemptRepository
 import com.chujunjie.scamwisecampus.domain.repository.ScenarioRepository
 import com.chujunjie.scamwisecampus.domain.usecase.EvaluateScenarioAttemptUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class ScenarioActivityViewModel(
     scenarioId: String,
     private val scenarioRepository: ScenarioRepository,
-    private val evaluateScenarioAttempt: EvaluateScenarioAttemptUseCase
+    private val evaluateScenarioAttempt: EvaluateScenarioAttemptUseCase,
+    private val attemptRepository: AttemptRepository
 ) : ViewModel() {
 
     private val scenario =
@@ -190,8 +197,12 @@ class ScenarioActivityViewModel(
 
     fun submitAttempt() {
         val state = _uiState.value
-        val currentScenario = state.scenario ?: return
 
+        if (state.evaluation != null || state.isSavingAttempt) {
+            return
+        }
+
+        val currentScenario = state.scenario ?: return
         val selectedConfidence = state.selectedConfidenceLevel
 
         if (selectedConfidence == null) {
@@ -221,12 +232,26 @@ class ScenarioActivityViewModel(
             submission = submission
         )
 
+        val attemptRecord = createAttemptRecord(
+            scenario = currentScenario,
+            state = state,
+            evaluation = evaluation
+        )
+
         _uiState.update { currentState ->
             currentState.copy(
                 evaluation = evaluation,
-                validationMessage = null
+                validationMessage = null,
+                isSavingAttempt = true,
+                isAttemptSaved = false,
+                saveErrorMessage = null
             )
         }
+
+        saveAttempt(
+            attemptRecord = attemptRecord,
+            evaluation = evaluation
+        )
     }
 
     fun restartScenario() {
@@ -235,6 +260,84 @@ class ScenarioActivityViewModel(
         _uiState.value = ScenarioActivityUiState(
             scenario = currentScenario,
             isLoading = false
+        )
+    }
+
+    private fun saveAttempt(
+        attemptRecord: AttemptRecord,
+        evaluation: AttemptEvaluation
+    ) {
+        viewModelScope.launch {
+            runCatching {
+                attemptRepository.saveAttempt(attemptRecord)
+            }.onSuccess {
+                updateSaveState(
+                    evaluation = evaluation,
+                    isSaved = true,
+                    errorMessage = null
+                )
+            }.onFailure {
+                updateSaveState(
+                    evaluation = evaluation,
+                    isSaved = false,
+                    errorMessage =
+                        "Your result is available, but this attempt could not be saved."
+                )
+            }
+        }
+    }
+
+    private fun updateSaveState(
+        evaluation: AttemptEvaluation,
+        isSaved: Boolean,
+        errorMessage: String?
+    ) {
+        _uiState.update { currentState ->
+            if (currentState.evaluation != evaluation) {
+                currentState
+            } else {
+                currentState.copy(
+                    isSavingAttempt = false,
+                    isAttemptSaved = isSaved,
+                    saveErrorMessage = errorMessage
+                )
+            }
+        }
+    }
+
+    private fun createAttemptRecord(
+        scenario: Scenario,
+        state: ScenarioActivityUiState,
+        evaluation: AttemptEvaluation
+    ): AttemptRecord {
+        return AttemptRecord(
+            scenarioId = scenario.id,
+            category = scenario.category,
+            difficulty = scenario.difficulty,
+            selectedRiskLevel =
+                requireNotNull(state.selectedRiskLevel),
+            correctRiskLevel = scenario.correctRiskLevel,
+            selectedWarningSignIds =
+                state.selectedWarningSignIds,
+            selectedNoWarningSigns =
+                state.hasSelectedNoWarningSigns,
+            selectedActionId =
+                requireNotNull(state.selectedActionId),
+            confidenceLevel =
+                requireNotNull(state.selectedConfidenceLevel),
+            riskScore = evaluation.riskScore,
+            warningSignScore =
+                evaluation.warningSignScore,
+            safeActionScore =
+                evaluation.safeActionScore,
+            totalScore = evaluation.totalScore,
+            isRiskCorrect = evaluation.isRiskCorrect,
+            isSafeActionCorrect =
+                evaluation.isSafeActionCorrect,
+            confidenceCalibration =
+                evaluation.confidenceCalibration,
+            completedAtEpochMillis =
+                System.currentTimeMillis()
         )
     }
 }
