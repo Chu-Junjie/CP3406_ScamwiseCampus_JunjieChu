@@ -12,6 +12,7 @@ import com.chujunjie.scamwisecampus.ui.screens.scenario.ScenarioActivityViewMode
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
+import com.chujunjie.scamwisecampus.ui.screens.statistics.StatisticsViewModel
 
 val appModule = module {
 
@@ -44,4 +45,6 @@ val appModule = module {
     viewModelOf(::PracticeViewModel)
 
     viewModelOf(::ScenarioActivityViewModel)
+
+    viewModelOf(::StatisticsViewModel)
 }

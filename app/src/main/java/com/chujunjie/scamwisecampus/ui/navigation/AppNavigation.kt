@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import com.chujunjie.scamwisecampus.ui.screens.home.HomeScreen
 import com.chujunjie.scamwisecampus.ui.screens.practice.PracticeRoute
 import com.chujunjie.scamwisecampus.ui.screens.settings.SettingsScreen
-import com.chujunjie.scamwisecampus.ui.screens.statistics.StatisticsScreen
+import com.chujunjie.scamwisecampus.ui.screens.statistics.StatisticsRoute
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.chujunjie.scamwisecampus.ui.screens.scenario.ScenarioActivityRoute
@@ -57,7 +57,15 @@ fun AppNavigation(
         }
 
         composable(AppRoute.Statistics.route) {
-            StatisticsScreen()
+            StatisticsRoute(
+                onPracticeClick = {
+                    navController.navigate(
+                        AppRoute.Practice.route
+                    ) {
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
 
         composable(AppRoute.Settings.route) {
