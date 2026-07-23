@@ -30,6 +30,9 @@ import com.chujunjie.scamwisecampus.domain.model.LinkVerificationResult
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
 
 @Composable
 fun LinkVerificationScreen(
@@ -180,7 +183,11 @@ fun LinkVerificationScreen(
                     color =
                         MaterialTheme.colorScheme.error,
                     style =
-                        MaterialTheme.typography.bodyMedium
+                        MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.semantics {
+                        liveRegion =
+                            LiveRegionMode.Assertive
+                    }
                 )
             }
         }
@@ -193,7 +200,13 @@ fun LinkVerificationScreen(
                     Text(
                         text = message,
                         style =
-                            MaterialTheme.typography.bodyMedium
+                            MaterialTheme.typography.bodyMedium,
+                        color =
+                            MaterialTheme.colorScheme.error,
+                        modifier = Modifier.semantics {
+                            liveRegion =
+                                LiveRegionMode.Assertive
+                        }
                     )
                 }
             }
@@ -225,10 +238,17 @@ fun LinkVerificationScreen(
 
         uiState.result?.let { result ->
             item {
-                ResultContent(
-                    result = result,
-                    onClearResult = onClearResult
-                )
+                Box(
+                    modifier = Modifier.semantics {
+                        liveRegion =
+                            LiveRegionMode.Polite
+                    }
+                ) {
+                    ResultContent(
+                        result = result,
+                        onClearResult = onClearResult
+                    )
+                }
             }
         }
 

@@ -27,6 +27,8 @@ import com.chujunjie.scamwisecampus.domain.model.RiskLevel
 import com.chujunjie.scamwisecampus.domain.model.WarningSign
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
 
 @Composable
 fun ScenarioActivityScreen(
@@ -221,8 +223,14 @@ fun ScenarioActivityScreen(
                     item {
                         Text(
                             text = message,
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyMedium
+                            color =
+                                MaterialTheme.colorScheme.error,
+                            style =
+                                MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.semantics {
+                                liveRegion =
+                                    LiveRegionMode.Assertive
+                            }
                         )
                     }
                 }
@@ -461,19 +469,31 @@ private fun MessageContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(24.dp)
+            .semantics {
+                liveRegion =
+                    LiveRegionMode.Polite
+            },
+        verticalArrangement =
+            Arrangement.Center,
+        horizontalAlignment =
+            Alignment.CenterHorizontally
     ) {
         Text(
             text = message,
-            style = MaterialTheme.typography.bodyLarge
+            style =
+                MaterialTheme.typography.bodyLarge
         )
 
-        if (actionText != null && onAction != null) {
+        if (
+            actionText != null &&
+            onAction != null
+        ) {
             Button(
                 onClick = onAction,
-                modifier = Modifier.padding(top = 16.dp)
+                modifier = Modifier.padding(
+                    top = 16.dp
+                )
             ) {
                 Text(text = actionText)
             }
