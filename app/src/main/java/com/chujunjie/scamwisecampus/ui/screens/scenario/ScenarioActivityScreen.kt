@@ -383,13 +383,20 @@ private fun SelectionRow(
 ) {
     ElevatedCard(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .semantics(
+                mergeDescendants = true
+            ) {
+                // Merge the radio button state and label.
+            }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment =
+                Alignment.CenterVertically
         ) {
             RadioButton(
                 selected = selected,
@@ -398,7 +405,9 @@ private fun SelectionRow(
 
             Text(
                 text = label,
-                modifier = Modifier.padding(start = 8.dp)
+                modifier = Modifier.padding(
+                    start = 8.dp
+                )
             )
         }
     }
@@ -412,13 +421,20 @@ private fun CheckboxRow(
 ) {
     ElevatedCard(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .semantics(
+                mergeDescendants = true
+            ) {
+                // Merge the checkbox state and label.
+            }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment =
+                Alignment.CenterVertically
         ) {
             Checkbox(
                 checked = checked,
@@ -427,7 +443,9 @@ private fun CheckboxRow(
 
             Text(
                 text = label,
-                modifier = Modifier.padding(start = 8.dp)
+                modifier = Modifier.padding(
+                    start = 8.dp
+                )
             )
         }
     }

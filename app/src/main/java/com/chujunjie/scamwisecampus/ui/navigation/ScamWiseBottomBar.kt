@@ -15,17 +15,20 @@ fun ScamWiseBottomBar(
 ) {
     NavigationBar {
         destinations.forEach { destination ->
-            val label = stringResource(destination.labelResourceId)
+            val label = stringResource(
+                destination.labelResourceId
+            )
 
             NavigationBarItem(
-                selected = currentRoute == destination.route,
+                selected =
+                    currentRoute == destination.route,
                 onClick = {
                     onDestinationClick(destination)
                 },
                 icon = {
                     Icon(
                         imageVector = destination.icon,
-                        contentDescription = label
+                        contentDescription = null
                     )
                 },
                 label = {

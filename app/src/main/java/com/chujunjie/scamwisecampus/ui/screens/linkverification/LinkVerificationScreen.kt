@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.chujunjie.scamwisecampus.domain.model.LinkVerificationResult
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.foundation.layout.size
 
 @Composable
 fun LinkVerificationScreen(
@@ -140,7 +141,13 @@ fun LinkVerificationScreen(
                     )
                 },
                 enabled = !uiState.isLoading,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .semantics(
+                        mergeDescendants = true
+                    ) {
+                        // Merge the checkbox state and consent text.
+                    }
             ) {
                 Row(
                     modifier = Modifier
@@ -199,7 +206,17 @@ fun LinkVerificationScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 if (uiState.isLoading) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        strokeWidth = 2.dp
+                    )
+
+                    Text(
+                        text = "Checking...",
+                        modifier = Modifier.padding(
+                            start = 8.dp
+                        )
+                    )
                 } else {
                     Text(text = "Check URL")
                 }
