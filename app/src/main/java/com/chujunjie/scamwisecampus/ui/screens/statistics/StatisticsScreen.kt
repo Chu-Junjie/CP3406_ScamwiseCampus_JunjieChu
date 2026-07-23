@@ -27,6 +27,9 @@ import com.chujunjie.scamwisecampus.domain.model.Difficulty
 import com.chujunjie.scamwisecampus.domain.model.ScamCategory
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.liveRegion
 
 @Composable
 fun StatisticsScreen(
@@ -129,7 +132,10 @@ private fun StatisticsDashboard(
         item {
             Text(
                 text = "Performance by Category",
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.semantics {
+                    heading()
+                }
             )
         }
 
@@ -148,7 +154,11 @@ private fun StatisticsDashboard(
             Text(
                 text = "Recent Attempts",
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(top = 4.dp)
+                modifier = Modifier
+                    .padding(top = 4.dp)
+                    .semantics {
+                        heading()
+                    }
             )
         }
 
@@ -404,17 +414,26 @@ private fun SummaryValueRow(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics(
+                mergeDescendants = true
+            ) {
+                // Read the metric label and value together.
+            },
+        horizontalArrangement =
+            Arrangement.SpaceBetween
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.bodyLarge
+            style =
+                MaterialTheme.typography.bodyLarge
         )
 
         Text(
             text = value,
-            style = MaterialTheme.typography.titleMedium
+            style =
+                MaterialTheme.typography.titleMedium
         )
     }
 }
@@ -426,20 +445,29 @@ private fun ProgressMetric(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics(
+                mergeDescendants = true
+            ) {
+                // Read the metric label and percentage together.
+            }
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement =
+                Arrangement.SpaceBetween
         ) {
             Text(
                 text = label,
-                style = MaterialTheme.typography.bodyMedium
+                style =
+                    MaterialTheme.typography.bodyMedium
             )
 
             Text(
                 text = "$percent%",
-                style = MaterialTheme.typography.labelLarge
+                style =
+                    MaterialTheme.typography.labelLarge
             )
         }
 
@@ -453,6 +481,9 @@ private fun ProgressMetric(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp)
+                .clearAndSetSemantics {
+                    // The visible percentage already describes progress.
+                }
         )
     }
 }
@@ -474,15 +505,24 @@ private fun LoadingStatisticsContent(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier
+            .fillMaxSize()
+            .semantics {
+                liveRegion =
+                    LiveRegionMode.Polite
+            },
+        verticalArrangement =
+            Arrangement.Center,
+        horizontalAlignment =
+            Alignment.CenterHorizontally
     ) {
         CircularProgressIndicator()
 
         Text(
             text = "Loading statistics...",
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = Modifier.padding(
+                top = 16.dp
+            )
         )
     }
 }
@@ -495,25 +535,41 @@ private fun EmptyStatisticsContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(24.dp)
+            .semantics {
+                liveRegion =
+                    LiveRegionMode.Polite
+            },
+        verticalArrangement =
+            Arrangement.Center,
+        horizontalAlignment =
+            Alignment.CenterHorizontally
     ) {
         Text(
             text = "No practice history yet",
-            style = MaterialTheme.typography.headlineSmall
+            style =
+                MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.semantics {
+                heading()
+            }
         )
 
         Text(
             text = "Complete a scenario to begin tracking your progress.",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 8.dp)
+            style =
+                MaterialTheme.typography.bodyLarge,
+            color =
+                MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(
+                top = 8.dp
+            )
         )
 
         Button(
             onClick = onPracticeClick,
-            modifier = Modifier.padding(top = 20.dp)
+            modifier = Modifier.padding(
+                top = 20.dp
+            )
         ) {
             Text(text = "Start Practice")
         }
@@ -528,13 +584,36 @@ private fun StatisticsMessageContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(24.dp)
+            .semantics {
+                liveRegion =
+                    LiveRegionMode.Assertive
+            },
+        verticalArrangement =
+            Arrangement.Center,
+        horizontalAlignment =
+            Alignment.CenterHorizontally
     ) {
         Text(
+            text = "Statistics unavailable",
+            style =
+                MaterialTheme.typography.headlineSmall,
+            color =
+                MaterialTheme.colorScheme.error,
+            modifier = Modifier.semantics {
+                heading()
+            }
+        )
+
+        Text(
             text = message,
-            style = MaterialTheme.typography.bodyLarge
+            style =
+                MaterialTheme.typography.bodyLarge,
+            color =
+                MaterialTheme.colorScheme.error,
+            modifier = Modifier.padding(
+                top = 8.dp
+            )
         )
     }
 }

@@ -32,6 +32,9 @@ import androidx.compose.ui.unit.dp
 import com.chujunjie.scamwisecampus.domain.model.ThemeMode
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
 
 @Composable
 fun SettingsScreen(
@@ -178,7 +181,17 @@ private fun SettingsContent(
                         .padding(top = 16.dp)
                 ) {
                     if (uiState.isClearingHistory) {
-                        CircularProgressIndicator()
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            strokeWidth = 2.dp
+                        )
+
+                        Text(
+                            text = "Clearing...",
+                            modifier = Modifier.padding(
+                                start = 8.dp
+                            )
+                        )
                     } else {
                         Text(text = "Clear Practice History")
                     }
@@ -239,7 +252,13 @@ private fun ThemeOptionRow(
 ) {
     ElevatedCard(
         onClick = onClick,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics(
+                mergeDescendants = true
+            ) {
+                // Merge the theme selection state and description.
+            }
     ) {
         Row(
             modifier = Modifier
@@ -342,8 +361,12 @@ private fun LoadingSettingsContent(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center,
+        modifier = modifier.semantics {
+            liveRegion =
+                LiveRegionMode.Polite
+        },
+        verticalArrangement =
+            Arrangement.Center,
         horizontalAlignment =
             Alignment.CenterHorizontally
     ) {
@@ -351,7 +374,9 @@ private fun LoadingSettingsContent(
 
         Text(
             text = "Loading settings...",
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = Modifier.padding(
+                top = 16.dp
+            )
         )
     }
 }
