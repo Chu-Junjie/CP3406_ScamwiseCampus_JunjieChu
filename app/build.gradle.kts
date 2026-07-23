@@ -19,7 +19,8 @@ val localProperties = Properties().apply {
 }
 
 android {
-    namespace = "com.chujunjie.scamwisecampus"
+    namespace =
+        "com.chujunjie.scamwisecampus"
 
     compileSdk {
         version = release(36) {
@@ -47,6 +48,9 @@ android {
                 )
             }\""
         )
+
+        testInstrumentationRunner =
+            "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -54,15 +58,20 @@ android {
             isMinifyEnabled = false
 
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
+                getDefaultProguardFile(
+                    "proguard-android-optimize.txt"
+                ),
                 "proguard-rules.pro"
             )
         }
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility =
+            JavaVersion.VERSION_11
+
+        targetCompatibility =
+            JavaVersion.VERSION_11
     }
 
     buildFeatures {
@@ -73,23 +82,39 @@ android {
 
 dependencies {
     // Compose
-    implementation(platform(libs.androidx.compose.bom))
+    implementation(
+        platform(libs.androidx.compose.bom)
+    )
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(
+        libs.androidx.compose.material.icons.extended
+    )
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(
+        libs.androidx.compose.ui.tooling.preview
+    )
 
     // Android core and lifecycle
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(
+        libs.androidx.lifecycle.runtime.ktx
+    )
+    implementation(
+        libs.androidx.lifecycle.runtime.compose
+    )
+    implementation(
+        libs.androidx.lifecycle.viewmodel.ktx
+    )
+    implementation(
+        libs.androidx.lifecycle.viewmodel.compose
+    )
 
     // Navigation
-    implementation(libs.androidx.navigation.compose)
+    implementation(
+        libs.androidx.navigation.compose
+    )
 
     // Dependency injection
     implementation(platform(libs.koin.bom))
@@ -102,34 +127,69 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     // Preferences
-    implementation(libs.androidx.datastore.preferences)
+    implementation(
+        libs.androidx.datastore.preferences
+    )
 
     // Networking
     implementation(libs.retrofit)
-    implementation(libs.retrofit.kotlinx.serialization)
-    implementation(libs.okhttp.logging.interceptor)
+    implementation(
+        libs.retrofit.kotlinx.serialization
+    )
+    implementation(
+        libs.okhttp.logging.interceptor
+    )
 
     // Serialization and coroutines
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.kotlinx.coroutines.android)
+    implementation(
+        libs.kotlinx.serialization.json
+    )
+    implementation(
+        libs.kotlinx.coroutines.android
+    )
 
     // Local unit testing
     testImplementation(libs.junit)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.androidx.arch.core.testing)
-    testImplementation(platform(libs.koin.bom))
+    testImplementation(
+        libs.kotlinx.coroutines.test
+    )
+    testImplementation(
+        libs.androidx.arch.core.testing
+    )
+    testImplementation(
+        platform(libs.koin.bom)
+    )
     testImplementation(libs.koin.test)
     testImplementation(libs.koin.test.junit4)
 
     // Instrumented and Compose UI testing
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.room.testing)
-    androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(
+        platform(libs.androidx.compose.bom)
+    )
+    androidTestImplementation(
+        libs.androidx.compose.ui.test.junit4
+    )
+    androidTestImplementation(
+        libs.androidx.espresso.core
+    )
+    androidTestImplementation(
+        libs.androidx.junit
+    )
+    androidTestImplementation(
+        libs.androidx.room.testing
+    )
+    androidTestImplementation(
+        libs.kotlinx.coroutines.test
+    )
+    androidTestImplementation(
+        libs.androidx.test.runner
+    )
 
     // Debug-only Compose tools
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
-    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(
+        libs.androidx.compose.ui.test.manifest
+    )
+    debugImplementation(
+        libs.androidx.compose.ui.tooling
+    )
 }
