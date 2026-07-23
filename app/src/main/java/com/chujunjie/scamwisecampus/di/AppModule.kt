@@ -13,6 +13,13 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import com.chujunjie.scamwisecampus.ui.screens.statistics.StatisticsViewModel
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import com.chujunjie.scamwisecampus.data.preferences.settingsDataStore
+import com.chujunjie.scamwisecampus.data.repository.SettingsRepositoryImpl
+import com.chujunjie.scamwisecampus.domain.repository.SettingsRepository
+import com.chujunjie.scamwisecampus.ui.screens.settings.SettingsViewModel
+import com.chujunjie.scamwisecampus.ui.theme.AppThemeViewModel
 
 val appModule = module {
 
@@ -38,6 +45,16 @@ val appModule = module {
         ScenarioRepositoryImpl()
     }
 
+    single<DataStore<Preferences>> {
+        androidContext().settingsDataStore
+    }
+
+    single<SettingsRepository> {
+        SettingsRepositoryImpl(
+            dataStore = get()
+        )
+    }
+
     factory {
         EvaluateScenarioAttemptUseCase()
     }
@@ -47,4 +64,8 @@ val appModule = module {
     viewModelOf(::ScenarioActivityViewModel)
 
     viewModelOf(::StatisticsViewModel)
+
+    viewModelOf(::SettingsViewModel)
+
+    viewModelOf(::AppThemeViewModel)
 }
