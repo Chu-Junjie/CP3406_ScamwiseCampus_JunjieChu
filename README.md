@@ -227,20 +227,27 @@ A Safe Browsing result does not prove that a website is safe. The app continues 
 
 ## API Key Configuration
 
-The Safe Browsing API key is not committed to GitHub.
+The Google Safe Browsing API key is not included in this repository.
 
-Create or update the project-level `local.properties` file:
+Create or update the project-level `local.properties` file and add:
 
 ```properties
-sdk.dir=D\:\\Android\\Sdk
-SAFE_BROWSING_API_KEY=YOUR_API_KEY_HERE
+SAFE_BROWSING_API_KEY=YOUR_OWN_API_KEY
 ```
 
-Replace the SDK path with the Android SDK location on your computer.
+Replace `YOUR_OWN_API_KEY` with a valid Google Safe Browsing API key on your local computer.
 
-Do not commit `local.properties`. The project `.gitignore` excludes this file.
+Never include the real API key in:
 
-After adding or changing the API key, rebuild the application:
+- README files
+- Source code
+- Screenshots
+- Git commits
+- GitHub Issues
+
+The `local.properties` file is excluded from version control through `.gitignore`.
+
+After configuring the key, rebuild the project:
 
 ```powershell
 .\gradlew.bat :app:assembleDebug
