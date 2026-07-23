@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.chujunjie.scamwisecampus.ui.screens.home.HomeScreen
+import com.chujunjie.scamwisecampus.ui.screens.home.HomeRoute
 import com.chujunjie.scamwisecampus.ui.screens.practice.PracticeRoute
 import com.chujunjie.scamwisecampus.ui.screens.settings.SettingsRoute
 import com.chujunjie.scamwisecampus.ui.screens.statistics.StatisticsRoute
@@ -25,19 +25,25 @@ fun AppNavigation(
         modifier = modifier
     ) {
         composable(AppRoute.Home.route) {
-            HomeScreen(
+            HomeRoute(
+                onScenarioClick = { scenarioId ->
+                    navController.navigate(
+                        AppRoute.ScenarioActivity.createRoute(
+                            scenarioId = scenarioId
+                        )
+                    )
+                },
                 onPracticeClick = {
-                    navController.navigate(AppRoute.Practice.route) {
+                    navController.navigate(
+                        AppRoute.Practice.route
+                    ) {
                         launchSingleTop = true
                     }
                 },
                 onStatisticsClick = {
-                    navController.navigate(AppRoute.Statistics.route) {
-                        launchSingleTop = true
-                    }
-                },
-                onSettingsClick = {
-                    navController.navigate(AppRoute.Settings.route) {
+                    navController.navigate(
+                        AppRoute.Statistics.route
+                    ) {
                         launchSingleTop = true
                     }
                 }

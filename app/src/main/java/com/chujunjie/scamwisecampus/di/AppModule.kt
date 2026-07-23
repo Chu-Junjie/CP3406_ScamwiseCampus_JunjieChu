@@ -20,6 +20,7 @@ import com.chujunjie.scamwisecampus.data.repository.SettingsRepositoryImpl
 import com.chujunjie.scamwisecampus.domain.repository.SettingsRepository
 import com.chujunjie.scamwisecampus.ui.screens.settings.SettingsViewModel
 import com.chujunjie.scamwisecampus.ui.theme.AppThemeViewModel
+import com.chujunjie.scamwisecampus.ui.screens.home.HomeViewModel
 
 val appModule = module {
 
@@ -58,6 +59,8 @@ val appModule = module {
     factory {
         EvaluateScenarioAttemptUseCase()
     }
+
+    viewModelOf(::HomeViewModel)
 
     viewModelOf(::PracticeViewModel)
 
