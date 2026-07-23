@@ -24,6 +24,8 @@ import com.chujunjie.scamwisecampus.domain.model.ConfidenceCalibration
 import com.chujunjie.scamwisecampus.domain.model.Difficulty
 import com.chujunjie.scamwisecampus.domain.model.ScamCategory
 import com.chujunjie.scamwisecampus.domain.model.Scenario
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 
 @Composable
 fun HomeScreen(
@@ -85,7 +87,10 @@ private fun HomeDashboard(
         item {
             Text(
                 text = "ScamWise Campus",
-                style = MaterialTheme.typography.headlineMedium
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.semantics {
+                    heading()
+                }
             )
 
             Text(

@@ -27,6 +27,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.chujunjie.scamwisecampus.domain.model.LinkVerificationResult
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 
 @Composable
 fun LinkVerificationScreen(
@@ -59,8 +61,10 @@ fun LinkVerificationScreen(
         item {
             Text(
                 text = "Link Verification Lab",
-                style =
-                    MaterialTheme.typography.headlineMedium
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.semantics {
+                    heading()
+                }
             )
 
             Text(

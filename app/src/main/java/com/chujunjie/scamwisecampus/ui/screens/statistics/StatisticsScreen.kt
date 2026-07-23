@@ -25,6 +25,8 @@ import com.chujunjie.scamwisecampus.domain.model.AttemptRecord
 import com.chujunjie.scamwisecampus.domain.model.ConfidenceCalibration
 import com.chujunjie.scamwisecampus.domain.model.Difficulty
 import com.chujunjie.scamwisecampus.domain.model.ScamCategory
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 
 @Composable
 fun StatisticsScreen(
@@ -80,7 +82,10 @@ private fun StatisticsDashboard(
         item {
             Text(
                 text = "Statistics",
-                style = MaterialTheme.typography.headlineMedium
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.semantics {
+                    heading()
+                }
             )
 
             Text(

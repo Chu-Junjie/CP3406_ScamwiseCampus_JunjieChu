@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import com.chujunjie.scamwisecampus.domain.model.Difficulty
 import com.chujunjie.scamwisecampus.domain.model.ScamCategory
 import com.chujunjie.scamwisecampus.domain.model.Scenario
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 
 @Composable
 fun PracticeScreen(
@@ -50,7 +52,9 @@ fun PracticeScreen(
         Text(
             text = "Practice",
             style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(top = 20.dp)
+            modifier = Modifier.semantics {
+                heading()
+            }
         )
 
         Text(

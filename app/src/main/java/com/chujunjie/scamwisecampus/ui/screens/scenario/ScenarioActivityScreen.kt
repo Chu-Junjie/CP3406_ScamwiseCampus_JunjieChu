@@ -25,6 +25,8 @@ import com.chujunjie.scamwisecampus.domain.model.ActionOption
 import com.chujunjie.scamwisecampus.domain.model.ConfidenceLevel
 import com.chujunjie.scamwisecampus.domain.model.RiskLevel
 import com.chujunjie.scamwisecampus.domain.model.WarningSign
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 
 @Composable
 fun ScenarioActivityScreen(
@@ -106,7 +108,10 @@ fun ScenarioActivityScreen(
                 item {
                     Text(
                         text = scenario.title,
-                        style = MaterialTheme.typography.headlineSmall
+                        style = MaterialTheme.typography.headlineSmall,
+                        modifier = Modifier.semantics {
+                            heading()
+                        }
                     )
 
                     Text(
