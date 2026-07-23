@@ -10,6 +10,9 @@ sealed class AppRoute(val route: String) {
 
     object Settings : AppRoute("settings")
 
+    object LinkVerification :
+        AppRoute("link-verification")
+
     object ScenarioActivity : AppRoute(
         route = "scenario/{$SCENARIO_ID_ARGUMENT}"
     ) {

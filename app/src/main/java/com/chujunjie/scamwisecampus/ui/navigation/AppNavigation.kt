@@ -13,6 +13,7 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.chujunjie.scamwisecampus.ui.screens.scenario.ScenarioActivityRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.chujunjie.scamwisecampus.ui.screens.linkverification.LinkVerificationRoute
 
 @Composable
 fun AppNavigation(
@@ -28,9 +29,8 @@ fun AppNavigation(
             HomeRoute(
                 onScenarioClick = { scenarioId ->
                     navController.navigate(
-                        AppRoute.ScenarioActivity.createRoute(
-                            scenarioId = scenarioId
-                        )
+                        AppRoute.ScenarioActivity
+                            .createRoute(scenarioId)
                     )
                 },
                 onPracticeClick = {
@@ -46,6 +46,11 @@ fun AppNavigation(
                     ) {
                         launchSingleTop = true
                     }
+                },
+                onLinkVerificationClick = {
+                    navController.navigate(
+                        AppRoute.LinkVerification.route
+                    )
                 }
             )
         }
@@ -76,6 +81,16 @@ fun AppNavigation(
 
         composable(AppRoute.Settings.route) {
             SettingsRoute()
+        }
+
+        composable(
+            route = AppRoute.LinkVerification.route
+        ) {
+            LinkVerificationRoute(
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         composable(

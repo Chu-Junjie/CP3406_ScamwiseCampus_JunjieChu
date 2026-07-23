@@ -10,6 +10,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import android.util.Log
+import java.io.IOException
+import kotlinx.serialization.SerializationException
+import retrofit2.HttpException
 
 class LinkVerificationViewModel(
     private val validateUrl: ValidateUrlUseCase,
@@ -119,12 +123,50 @@ class LinkVerificationViewModel(
                         result = result
                     )
                 }
-            }.onFailure {
+            }.onFailure { error ->
+                val errorDetails = when (error) {
+                    is HttpException -> {
+                        val responseBody = runCatching {
+                            error.response()
+                                ?.errorBody()
+                                ?.string()
+                        }.getOrNull()
+
+                        buildString {
+                            append("HTTP ")
+                            append(error.code())
+
+                            if (!responseBody.isNullOrBlank()) {
+                                append(": ")
+                                append(responseBody.take(1_000))
+                            }
+                        }
+                    }
+
+                    is SerializationException -> {
+                        "JSON parsing failed: ${error.message}"
+                    }
+
+                    is IOException -> {
+                        "Network request failed: ${error.message}"
+                    }
+
+                    else -> {
+                        "${error::class.simpleName}: ${error.message}"
+                    }
+                }
+
+                Log.e(
+                    "LinkVerification",
+                    errorDetails,
+                    error
+                )
+
                 _uiState.update { state ->
                     state.copy(
                         isLoading = false,
                         networkErrorMessage =
-                            "The URL could not be checked. Confirm your internet connection and try again."
+                            "The URL could not be checked. See Logcat for diagnostic details."
                     )
                 }
             }

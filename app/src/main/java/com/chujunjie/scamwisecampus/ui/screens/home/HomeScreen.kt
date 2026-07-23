@@ -31,6 +31,7 @@ fun HomeScreen(
     onScenarioClick: (String) -> Unit,
     onPracticeClick: () -> Unit,
     onStatisticsClick: () -> Unit,
+    onLinkVerificationClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     when {
@@ -55,6 +56,7 @@ fun HomeScreen(
                 onScenarioClick = onScenarioClick,
                 onPracticeClick = onPracticeClick,
                 onStatisticsClick = onStatisticsClick,
+                onLinkVerificationClick = onLinkVerificationClick,
                 modifier = modifier
             )
         }
@@ -67,6 +69,7 @@ private fun HomeDashboard(
     onScenarioClick: (String) -> Unit,
     onPracticeClick: () -> Unit,
     onStatisticsClick: () -> Unit,
+    onLinkVerificationClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -108,8 +111,7 @@ private fun HomeDashboard(
             item {
                 RecommendationCard(
                     scenario = scenario,
-                    hasAttemptHistory =
-                        uiState.totalAttempts > 0,
+                    hasAttemptHistory = uiState.totalAttempts > 0,
                     onStartClick = {
                         onScenarioClick(scenario.id)
                     }
@@ -128,11 +130,9 @@ private fun HomeDashboard(
                     )
 
                     Text(
-                        text = attempt.confidenceCalibration
-                            .displayName(),
+                        text = attempt.confidenceCalibration.displayName(),
                         style = MaterialTheme.typography.bodyMedium,
-                        color =
-                            MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = 10.dp)
                     )
                 }
@@ -157,6 +157,15 @@ private fun HomeDashboard(
                         .padding(top = 12.dp)
                 ) {
                     Text(text = "View Statistics")
+                }
+
+                OutlinedButton(
+                    onClick = onLinkVerificationClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp)
+                ) {
+                    Text(text = "Open Link Verification Lab")
                 }
             }
         }

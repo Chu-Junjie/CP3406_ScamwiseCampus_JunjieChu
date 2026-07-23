@@ -1,6 +1,10 @@
 package com.chujunjie.scamwisecampus.data.repository
 
 import com.chujunjie.scamwisecampus.data.remote.safebrowsing.SafeBrowsingApi
+import com.chujunjie.scamwisecampus.data.remote.safebrowsing.model.ClientInfo
+import com.chujunjie.scamwisecampus.data.remote.safebrowsing.model.SafeBrowsingRequest
+import com.chujunjie.scamwisecampus.data.remote.safebrowsing.model.ThreatEntry
+import com.chujunjie.scamwisecampus.data.remote.safebrowsing.model.ThreatInfo
 import com.chujunjie.scamwisecampus.domain.model.LinkVerificationResult
 import com.chujunjie.scamwisecampus.domain.repository.LinkVerificationRepository
 
@@ -33,14 +37,40 @@ class LinkVerificationRepositoryImpl(
                 return cachedResult.result
             }
 
-        val response = safeBrowsingApi.searchUrl(
-            url = normalizedUrl,
-            apiKey = apiKey
+        val request = SafeBrowsingRequest(
+            client = ClientInfo(
+                clientId = "scamwise-campus",
+                clientVersion = "1.0.0"
+            ),
+            threatInfo = ThreatInfo(
+                threatTypes = listOf(
+                    "MALWARE",
+                    "SOCIAL_ENGINEERING",
+                    "UNWANTED_SOFTWARE",
+                    "POTENTIALLY_HARMFUL_APPLICATION"
+                ),
+                platformTypes = listOf(
+                    "ANY_PLATFORM"
+                ),
+                threatEntryTypes = listOf(
+                    "URL"
+                ),
+                threatEntries = listOf(
+                    ThreatEntry(
+                        url = normalizedUrl
+                    )
+                )
+            )
         )
 
-        val threatTypes = response.threats
-            .flatMap { threat ->
-                threat.threatTypes
+        val response = safeBrowsingApi.searchUrl(
+            apiKey = apiKey,
+            request = request
+        )
+
+        val threatTypes = response.matches
+            .map { match ->
+                match.threatType
             }
             .distinct()
             .sorted()
@@ -60,8 +90,16 @@ class LinkVerificationRepositoryImpl(
             }
 
         val cacheDurationMillis =
-            response.cacheDuration
-                .toDurationMillis()
+            response.matches
+                .map { match ->
+                    match.cacheDuration
+                        .toDurationMillis()
+                }
+                .filter { duration ->
+                    duration > 0
+                }
+                .minOrNull()
+                ?: 0L
 
         if (cacheDurationMillis > 0) {
             memoryCache[normalizedUrl] =
@@ -79,11 +117,11 @@ class LinkVerificationRepositoryImpl(
         val seconds = this
             ?.removeSuffix("s")
             ?.toDoubleOrNull()
-            ?: return 0
+            ?: return 0L
 
         return (seconds * 1_000)
             .toLong()
-            .coerceAtLeast(0)
+            .coerceAtLeast(0L)
     }
 
     private data class CachedResult(
