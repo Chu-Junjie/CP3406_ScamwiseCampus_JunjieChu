@@ -238,4 +238,22 @@
     <string name="link_threat_malware">Malware</string>
     <string name="link_threat_unwanted_software">Unwanted software</string>
     <string name="link_threat_harmful_application">Potentially harmful application</string>
+
+    <string name="link_validation_consent_required">Confirm that you understand the URL will be sent to Google Safe Browsing.</string>
+
+    <string name="link_validation_empty_input">Enter a URL to check.</string>
+
+    <string name="link_validation_contains_spaces">The URL must not contain spaces.</string>
+
+    <string name="link_validation_invalid_address">Enter a valid web address.</string>
+
+    <string name="link_validation_unsupported_scheme">Only HTTP and HTTPS URLs can be checked.</string>
+
+    <string name="link_validation_invalid_domain">Enter a URL with a valid domain.</string>
+
+    <string name="link_validation_unreadable_domain">The domain could not be read.</string>
+
+    <string name="link_validation_normalisation_failed">The URL could not be normalised.</string>
+
+    <string name="link_network_error">The URL could not be checked. Confirm your internet connection and try again.</string>
 </resources>

@@ -8,6 +8,16 @@ sealed interface UrlValidationResult {
     ) : UrlValidationResult
 
     data class Invalid(
-        val message: String
+        val error: UrlValidationError
     ) : UrlValidationResult
+}
+
+enum class UrlValidationError {
+    EMPTY_INPUT,
+    CONTAINS_WHITESPACE,
+    INVALID_WEB_ADDRESS,
+    UNSUPPORTED_SCHEME,
+    INVALID_DOMAIN,
+    UNREADABLE_DOMAIN,
+    NORMALISATION_FAILED
 }

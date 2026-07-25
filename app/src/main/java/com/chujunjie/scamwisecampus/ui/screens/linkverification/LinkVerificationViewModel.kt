@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 class LinkVerificationViewModel(
     private val validateUrl: ValidateUrlUseCase,
     private val linkVerificationRepository:
-        LinkVerificationRepository
+    LinkVerificationRepository
 ) : ViewModel() {
 
     private val _uiState =
@@ -28,8 +28,8 @@ class LinkVerificationViewModel(
             state.copy(
                 urlInput = urlInput,
                 result = null,
-                validationMessage = null,
-                networkErrorMessage = null
+                validationError = null,
+                statusMessage = null
             )
         }
     }
@@ -38,7 +38,7 @@ class LinkVerificationViewModel(
         _uiState.update { state ->
             state.copy(
                 hasConsent = hasConsent,
-                validationMessage = null
+                statusMessage = null
             )
         }
     }
@@ -53,8 +53,9 @@ class LinkVerificationViewModel(
         if (!state.hasConsent) {
             _uiState.update { currentState ->
                 currentState.copy(
-                    validationMessage =
-                        "Confirm that you understand the URL will be sent to Google Safe Browsing."
+                    statusMessage =
+                        LinkVerificationStatusMessage
+                            .CONSENT_REQUIRED
                 )
             }
 
@@ -69,9 +70,9 @@ class LinkVerificationViewModel(
                 _uiState.update { currentState ->
                     currentState.copy(
                         result = null,
-                        validationMessage =
-                            validationResult.message,
-                        networkErrorMessage = null
+                        validationError =
+                            validationResult.error,
+                        statusMessage = null
                     )
                 }
             }
@@ -86,8 +87,8 @@ class LinkVerificationViewModel(
         _uiState.update { state ->
             state.copy(
                 result = null,
-                validationMessage = null,
-                networkErrorMessage = null
+                validationError = null,
+                statusMessage = null
             )
         }
     }
@@ -100,8 +101,8 @@ class LinkVerificationViewModel(
                 state.copy(
                     isLoading = true,
                     result = null,
-                    validationMessage = null,
-                    networkErrorMessage = null
+                    validationError = null,
+                    statusMessage = null
                 )
             }
 
@@ -116,7 +117,8 @@ class LinkVerificationViewModel(
                 _uiState.update { state ->
                     state.copy(
                         isLoading = false,
-                        result = result
+                        result = result,
+                        statusMessage = null
                     )
                 }
             }.onFailure {
@@ -124,8 +126,9 @@ class LinkVerificationViewModel(
                     state.copy(
                         isLoading = false,
                         result = null,
-                        networkErrorMessage =
-                            "The URL could not be checked. Confirm your internet connection and try again."
+                        statusMessage =
+                            LinkVerificationStatusMessage
+                                .NETWORK_ERROR
                     )
                 }
             }

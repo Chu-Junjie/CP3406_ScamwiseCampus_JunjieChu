@@ -1,13 +1,13 @@
 package com.chujunjie.scamwisecampus.ui.screens.linkverification
 
 import com.chujunjie.scamwisecampus.domain.model.LinkVerificationResult
+import com.chujunjie.scamwisecampus.domain.model.UrlValidationError
 import com.chujunjie.scamwisecampus.domain.repository.LinkVerificationRepository
 import com.chujunjie.scamwisecampus.domain.usecase.ValidateUrlUseCase
 import com.chujunjie.scamwisecampus.testutil.MainDispatcherRule
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 
@@ -25,20 +25,15 @@ class LinkVerificationViewModelTest {
         val viewModel =
             createViewModel(repository)
 
-        viewModel.updateUrlInput(
-            "example.com"
-        )
+        viewModel.updateUrlInput("example.com")
         viewModel.checkUrl()
 
         assertEquals(
-            "Confirm that you understand the URL will be sent to Google Safe Browsing.",
-            viewModel.uiState.value.validationMessage
+            LinkVerificationStatusMessage.CONSENT_REQUIRED,
+            viewModel.uiState.value.statusMessage
         )
 
-        assertEquals(
-            0,
-            repository.checkCount
-        )
+        assertEquals(0, repository.checkCount)
     }
 
     @Test
@@ -83,9 +78,7 @@ class LinkVerificationViewModelTest {
         val viewModel =
             createViewModel(repository)
 
-        viewModel.updateUrlInput(
-            "example.com"
-        )
+        viewModel.updateUrlInput("example.com")
         viewModel.updateConsent(true)
         viewModel.checkUrl()
 
@@ -100,36 +93,28 @@ class LinkVerificationViewModelTest {
     }
 
     @Test
-    fun `invalid input does not call repository`() {
+    fun `invalid input exposes typed validation error`() {
         val repository =
             FakeLinkVerificationRepository()
 
         val viewModel =
             createViewModel(repository)
 
-        viewModel.updateUrlInput(
-            "not a url"
-        )
+        viewModel.updateUrlInput("not a url")
         viewModel.updateConsent(true)
         viewModel.checkUrl()
 
+        assertEquals(0, repository.checkCount)
+        assertNull(viewModel.uiState.value.result)
+
         assertEquals(
-            0,
-            repository.checkCount
-        )
-
-        assertNull(
-            viewModel.uiState.value.result
-        )
-
-        assertTrue(
-            viewModel.uiState.value
-                .validationMessage != null
+            UrlValidationError.CONTAINS_WHITESPACE,
+            viewModel.uiState.value.validationError
         )
     }
 
     @Test
-    fun `network failure displays recoverable error`() {
+    fun `network failure exposes recoverable status`() {
         val repository =
             FakeLinkVerificationRepository(
                 shouldFail = true
@@ -138,16 +123,13 @@ class LinkVerificationViewModelTest {
         val viewModel =
             createViewModel(repository)
 
-        viewModel.updateUrlInput(
-            "example.com"
-        )
+        viewModel.updateUrlInput("example.com")
         viewModel.updateConsent(true)
         viewModel.checkUrl()
 
         assertEquals(
-            "The URL could not be checked. Confirm your internet connection and try again.",
-            viewModel.uiState.value
-                .networkErrorMessage
+            LinkVerificationStatusMessage.NETWORK_ERROR,
+            viewModel.uiState.value.statusMessage
         )
 
         assertFalse(
@@ -159,23 +141,21 @@ class LinkVerificationViewModelTest {
         repository: LinkVerificationRepository
     ): LinkVerificationViewModel {
         return LinkVerificationViewModel(
-            validateUrl =
-                ValidateUrlUseCase(),
-            linkVerificationRepository =
-                repository
+            validateUrl = ValidateUrlUseCase(),
+            linkVerificationRepository = repository
         )
     }
 
     private class FakeLinkVerificationRepository(
         private val result:
-            LinkVerificationResult =
+        LinkVerificationResult =
             LinkVerificationResult.NoKnownThreat(
                 checkedUrl =
                     "https://example.com/",
                 domain = "example.com"
             ),
         private val shouldFail:
-            Boolean = false
+        Boolean = false
     ) : LinkVerificationRepository {
 
         var checkCount: Int = 0
@@ -196,9 +176,7 @@ class LinkVerificationViewModelTest {
             lastCheckedDomain = domain
 
             if (shouldFail) {
-                error(
-                    "Simulated network failure."
-                )
+                error("Simulated network failure.")
             }
 
             return result

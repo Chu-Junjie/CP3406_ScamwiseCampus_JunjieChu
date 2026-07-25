@@ -1,5 +1,6 @@
 package com.chujunjie.scamwisecampus.domain.usecase
 
+import com.chujunjie.scamwisecampus.domain.model.UrlValidationError
 import com.chujunjie.scamwisecampus.domain.model.UrlValidationResult
 import java.net.IDN
 import java.net.URI
@@ -12,22 +13,39 @@ class ValidateUrlUseCase {
         val trimmedInput = rawInput.trim()
 
         if (trimmedInput.isBlank()) {
-            return UrlValidationResult.Invalid(
-                message = "Enter a URL to check."
+            return invalid(
+                UrlValidationError.EMPTY_INPUT
             )
         }
 
-        if (trimmedInput.any { character ->
+        if (
+            trimmedInput.any { character ->
                 character.isWhitespace()
             }
         ) {
-            return UrlValidationResult.Invalid(
-                message = "The URL must not contain spaces."
+            return invalid(
+                UrlValidationError.CONTAINS_WHITESPACE
+            )
+        }
+
+        val explicitScheme =
+            EXPLICIT_SCHEME_PATTERN
+                .find(trimmedInput)
+                ?.groupValues
+                ?.get(1)
+                ?.lowercase()
+
+        if (
+            explicitScheme != null &&
+            explicitScheme !in SUPPORTED_SCHEMES
+        ) {
+            return invalid(
+                UrlValidationError.UNSUPPORTED_SCHEME
             )
         }
 
         val candidate =
-            if (trimmedInput.contains("://")) {
+            if (explicitScheme != null) {
                 trimmedInput
             } else {
                 "https://$trimmedInput"
@@ -36,8 +54,8 @@ class ValidateUrlUseCase {
         val parsedUri = runCatching {
             URI(candidate)
         }.getOrNull()
-            ?: return UrlValidationResult.Invalid(
-                message = "Enter a valid web address."
+            ?: return invalid(
+                UrlValidationError.INVALID_WEB_ADDRESS
             )
 
         val scheme = parsedUri.scheme
@@ -45,8 +63,8 @@ class ValidateUrlUseCase {
             .orEmpty()
 
         if (scheme != "http" && scheme != "https") {
-            return UrlValidationResult.Invalid(
-                message = "Only HTTP and HTTPS URLs can be checked."
+            return invalid(
+                UrlValidationError.UNSUPPORTED_SCHEME
             )
         }
 
@@ -56,16 +74,16 @@ class ValidateUrlUseCase {
             .orEmpty()
 
         if (rawHost.isBlank() || !rawHost.contains(".")) {
-            return UrlValidationResult.Invalid(
-                message = "Enter a URL with a valid domain."
+            return invalid(
+                UrlValidationError.INVALID_DOMAIN
             )
         }
 
         val asciiHost = runCatching {
             IDN.toASCII(rawHost)
         }.getOrNull()
-            ?: return UrlValidationResult.Invalid(
-                message = "The domain could not be read."
+            ?: return invalid(
+                UrlValidationError.UNREADABLE_DOMAIN
             )
 
         val pathValue =
@@ -84,8 +102,8 @@ class ValidateUrlUseCase {
                 null
             )
         }.getOrNull()
-            ?: return UrlValidationResult.Invalid(
-                message = "The URL could not be normalised."
+            ?: return invalid(
+                UrlValidationError.NORMALISATION_FAILED
             )
 
         return UrlValidationResult.Valid(
@@ -93,4 +111,18 @@ class ValidateUrlUseCase {
             domain = asciiHost
         )
     }
+
+    private fun invalid(
+        error: UrlValidationError
+    ): UrlValidationResult.Invalid {
+        return UrlValidationResult.Invalid(
+            error = error
+        )
+    }
 }
+
+private val SUPPORTED_SCHEMES =
+    setOf("http", "https")
+
+private val EXPLICIT_SCHEME_PATTERN =
+    Regex("^([A-Za-z][A-Za-z0-9+.-]*):")

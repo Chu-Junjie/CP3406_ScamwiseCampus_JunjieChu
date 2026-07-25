@@ -36,6 +36,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.chujunjie.scamwisecampus.R
 import com.chujunjie.scamwisecampus.domain.model.LinkVerificationResult
+import com.chujunjie.scamwisecampus.domain.model.UrlValidationError
 import com.chujunjie.scamwisecampus.ui.components.ResponsiveContent
 
 @Composable
@@ -211,10 +212,12 @@ fun LinkVerificationScreen(
                 }
             }
 
-            uiState.validationMessage?.let { message ->
+            uiState.validationError?.let { error ->
                 item {
                     Text(
-                        text = message,
+                        text = stringResource(
+                            error.messageRes()
+                        ),
                         color =
                             MaterialTheme.colorScheme.error,
                         style =
@@ -227,7 +230,7 @@ fun LinkVerificationScreen(
                 }
             }
 
-            uiState.networkErrorMessage?.let { message ->
+            uiState.statusMessage?.let { statusMessage ->
                 item {
                     InformationCard(
                         title = stringResource(
@@ -235,7 +238,9 @@ fun LinkVerificationScreen(
                         )
                     ) {
                         Text(
-                            text = message,
+                            text = stringResource(
+                                statusMessage.messageRes()
+                            ),
                             style =
                                 MaterialTheme.typography.bodyMedium,
                             color =
@@ -525,6 +530,43 @@ private fun String.knownThreatNameRes(): Int? {
             R.string.link_threat_harmful_application
 
         else -> null
+    }
+}
+
+@StringRes
+private fun UrlValidationError.messageRes(): Int {
+    return when (this) {
+        UrlValidationError.EMPTY_INPUT ->
+            R.string.link_validation_empty_input
+
+        UrlValidationError.CONTAINS_WHITESPACE ->
+            R.string.link_validation_contains_spaces
+
+        UrlValidationError.INVALID_WEB_ADDRESS ->
+            R.string.link_validation_invalid_address
+
+        UrlValidationError.UNSUPPORTED_SCHEME ->
+            R.string.link_validation_unsupported_scheme
+
+        UrlValidationError.INVALID_DOMAIN ->
+            R.string.link_validation_invalid_domain
+
+        UrlValidationError.UNREADABLE_DOMAIN ->
+            R.string.link_validation_unreadable_domain
+
+        UrlValidationError.NORMALISATION_FAILED ->
+            R.string.link_validation_normalisation_failed
+    }
+}
+
+@StringRes
+private fun LinkVerificationStatusMessage.messageRes(): Int {
+    return when (this) {
+        LinkVerificationStatusMessage.CONSENT_REQUIRED ->
+            R.string.link_validation_consent_required
+
+        LinkVerificationStatusMessage.NETWORK_ERROR ->
+            R.string.link_network_error
     }
 }
 

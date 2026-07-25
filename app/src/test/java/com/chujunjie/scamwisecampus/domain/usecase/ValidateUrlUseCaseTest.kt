@@ -1,8 +1,8 @@
 package com.chujunjie.scamwisecampus.domain.usecase
 
+import com.chujunjie.scamwisecampus.domain.model.UrlValidationError
 import com.chujunjie.scamwisecampus.domain.model.UrlValidationResult
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ValidateUrlUseCaseTest {
@@ -11,62 +11,68 @@ class ValidateUrlUseCaseTest {
         ValidateUrlUseCase()
 
     @Test
-    fun `blank input is rejected`() {
-        val result = validateUrl("   ")
-
-        assertTrue(
-            result is UrlValidationResult.Invalid
+    fun `blank input returns empty input error`() {
+        assertEquals(
+            UrlValidationResult.Invalid(
+                UrlValidationError.EMPTY_INPUT
+            ),
+            validateUrl("   ")
         )
     }
 
     @Test
     fun `missing scheme defaults to https`() {
-        val result =
-            validateUrl("example.com/login")
-
         assertEquals(
             UrlValidationResult.Valid(
                 normalizedUrl =
                     "https://example.com/login",
                 domain = "example.com"
             ),
-            result
+            validateUrl("example.com/login")
         )
     }
 
     @Test
     fun `fragment is removed before sending`() {
-        val result = validateUrl(
-            "https://example.com/login#private"
-        )
-
         assertEquals(
             UrlValidationResult.Valid(
                 normalizedUrl =
                     "https://example.com/login",
                 domain = "example.com"
             ),
-            result
+            validateUrl(
+                "https://example.com/login#private"
+            )
         )
     }
 
     @Test
-    fun `unsupported scheme is rejected`() {
-        val result =
+    fun `unsupported scheme returns typed error`() {
+        assertEquals(
+            UrlValidationResult.Invalid(
+                UrlValidationError.UNSUPPORTED_SCHEME
+            ),
             validateUrl("javascript:alert(1)")
-
-        assertTrue(
-            result is UrlValidationResult.Invalid
         )
     }
 
     @Test
-    fun `url containing spaces is rejected`() {
-        val result =
+    fun `url containing spaces returns typed error`() {
+        assertEquals(
+            UrlValidationResult.Invalid(
+                UrlValidationError.CONTAINS_WHITESPACE
+            ),
             validateUrl("https://example.com/a b")
+        )
+    }
 
-        assertTrue(
-            result is UrlValidationResult.Invalid
+    @Test
+    fun `host without top level domain is rejected`() {
+        assertEquals(
+            UrlValidationResult.Invalid(
+                UrlValidationError.INVALID_DOMAIN
+            ),
+            validateUrl("https://localhost/login")
         )
     }
 }
