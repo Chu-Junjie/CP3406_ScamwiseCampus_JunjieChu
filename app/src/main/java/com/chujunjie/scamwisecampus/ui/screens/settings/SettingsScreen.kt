@@ -1,5 +1,6 @@
 package com.chujunjie.scamwisecampus.ui.screens.settings
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -29,11 +30,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.chujunjie.scamwisecampus.R
 import com.chujunjie.scamwisecampus.domain.model.ThemeMode
 import com.chujunjie.scamwisecampus.ui.components.ResponsiveContent
 
@@ -122,7 +125,9 @@ private fun SettingsContent(
     ) {
         item {
             Text(
-                text = "Settings",
+                text = stringResource(
+                    R.string.settings_title
+                ),
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.semantics {
                     heading()
@@ -130,7 +135,9 @@ private fun SettingsContent(
             )
 
             Text(
-                text = "Control appearance and locally stored learning data.",
+                text = stringResource(
+                    R.string.settings_description
+                ),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 4.dp)
@@ -139,15 +146,21 @@ private fun SettingsContent(
 
         item {
             SettingsCard(
-                title = "Appearance"
+                title = stringResource(
+                    R.string.settings_appearance
+                )
             ) {
                 Text(
-                    text = "Theme",
+                    text = stringResource(
+                        R.string.settings_theme
+                    ),
                     style = MaterialTheme.typography.titleSmall
                 )
 
                 Text(
-                    text = "Choose how ScamWise Campus appears on this device.",
+                    text = stringResource(
+                        R.string.settings_theme_description
+                    ),
                     style = MaterialTheme.typography.bodyMedium,
                     color =
                         MaterialTheme.colorScheme.onSurfaceVariant,
@@ -170,10 +183,14 @@ private fun SettingsContent(
 
         item {
             SettingsCard(
-                title = "Local Learning Data"
+                title = stringResource(
+                    R.string.settings_local_learning_data
+                )
             ) {
                 Text(
-                    text = "Practice attempts are stored only on this device and are used to calculate Statistics.",
+                    text = stringResource(
+                        R.string.settings_local_data_description
+                    ),
                     style = MaterialTheme.typography.bodyMedium
                 )
 
@@ -192,13 +209,20 @@ private fun SettingsContent(
                         )
 
                         Text(
-                            text = "Clearing...",
+                            text = stringResource(
+                                R.string.settings_clearing
+                            ),
                             modifier = Modifier.padding(
                                 start = 8.dp
                             )
                         )
                     } else {
-                        Text(text = "Clear Practice History")
+                        Text(
+                            text = stringResource(
+                                R.string
+                                    .settings_clear_practice_history
+                            )
+                        )
                     }
                 }
             }
@@ -206,15 +230,21 @@ private fun SettingsContent(
 
         item {
             SettingsCard(
-                title = "Privacy"
+                title = stringResource(
+                    R.string.settings_privacy
+                )
             ) {
                 Text(
-                    text = "ScamWise Campus does not require an account and does not read messages, contacts, files, or location.",
+                    text = stringResource(
+                        R.string.settings_privacy_permissions
+                    ),
                     style = MaterialTheme.typography.bodyMedium
                 )
 
                 Text(
-                    text = "Practice answers and statistics remain in the app's private local storage unless you clear them.",
+                    text = stringResource(
+                        R.string.settings_privacy_storage
+                    ),
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(top = 10.dp)
                 )
@@ -223,15 +253,19 @@ private fun SettingsContent(
 
         item {
             SettingsCard(
-                title = "About"
+                title = stringResource(
+                    R.string.settings_about
+                )
             ) {
                 Text(
-                    text = "ScamWise Campus",
+                    text = stringResource(R.string.app_name),
                     style = MaterialTheme.typography.titleMedium
                 )
 
                 Text(
-                    text = "Pause. Check. Protect.",
+                    text = stringResource(
+                        R.string.home_tagline
+                    ),
                     style = MaterialTheme.typography.bodyMedium,
                     color =
                         MaterialTheme.colorScheme.onSurfaceVariant,
@@ -239,7 +273,9 @@ private fun SettingsContent(
                 )
 
                 Text(
-                    text = "An educational app for practising safer digital judgement.",
+                    text = stringResource(
+                        R.string.settings_about_description
+                    ),
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(top = 10.dp)
                 )
@@ -281,13 +317,17 @@ private fun ThemeOptionRow(
                 modifier = Modifier.padding(start = 8.dp)
             ) {
                 Text(
-                    text = themeMode.displayName(),
+                    text = stringResource(
+                        themeMode.displayNameRes()
+                    ),
                     style =
                         MaterialTheme.typography.bodyLarge
                 )
 
                 Text(
-                    text = themeMode.description(),
+                    text = stringResource(
+                        themeMode.descriptionRes()
+                    ),
                     style =
                         MaterialTheme.typography.bodySmall,
                     color =
@@ -335,11 +375,17 @@ private fun ClearHistoryDialog(
             }
         },
         title = {
-            Text(text = "Clear practice history?")
+            Text(
+                text = stringResource(
+                    R.string.settings_clear_history_dialog_title
+                )
+            )
         },
         text = {
             Text(
-                text = "This permanently removes all locally stored attempts and resets Statistics. This action cannot be undone."
+                text = stringResource(
+                    R.string.settings_clear_history_dialog_message
+                )
             )
         },
         confirmButton = {
@@ -347,7 +393,11 @@ private fun ClearHistoryDialog(
                 onClick = onConfirm,
                 enabled = !isClearing
             ) {
-                Text(text = "Clear History")
+                Text(
+                    text = stringResource(
+                        R.string.settings_clear_history_confirm
+                    )
+                )
             }
         },
         dismissButton = {
@@ -355,7 +405,11 @@ private fun ClearHistoryDialog(
                 onClick = onDismiss,
                 enabled = !isClearing
             ) {
-                Text(text = "Cancel")
+                Text(
+                    text = stringResource(
+                        R.string.common_cancel
+                    )
+                )
             }
         }
     )
@@ -367,42 +421,46 @@ private fun LoadingSettingsContent(
 ) {
     Column(
         modifier = modifier.semantics {
-            liveRegion =
-                LiveRegionMode.Polite
+            liveRegion = LiveRegionMode.Polite
         },
-        verticalArrangement =
-            Arrangement.Center,
-        horizontalAlignment =
-            Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CircularProgressIndicator()
 
         Text(
-            text = "Loading settings...",
-            modifier = Modifier.padding(
-                top = 16.dp
-            )
+            text = stringResource(
+                R.string.settings_loading
+            ),
+            modifier = Modifier.padding(top = 16.dp)
         )
     }
 }
 
-private fun ThemeMode.displayName(): String {
+@StringRes
+private fun ThemeMode.displayNameRes(): Int {
     return when (this) {
-        ThemeMode.SYSTEM -> "Use System Setting"
-        ThemeMode.LIGHT -> "Light"
-        ThemeMode.DARK -> "Dark"
+        ThemeMode.SYSTEM ->
+            R.string.theme_mode_system
+
+        ThemeMode.LIGHT ->
+            R.string.theme_mode_light
+
+        ThemeMode.DARK ->
+            R.string.theme_mode_dark
     }
 }
 
-private fun ThemeMode.description(): String {
+@StringRes
+private fun ThemeMode.descriptionRes(): Int {
     return when (this) {
         ThemeMode.SYSTEM ->
-            "Follow the device appearance."
+            R.string.theme_mode_system_description
 
         ThemeMode.LIGHT ->
-            "Always use the light theme."
+            R.string.theme_mode_light_description
 
         ThemeMode.DARK ->
-            "Always use the dark theme."
+            R.string.theme_mode_dark_description
     }
 }
