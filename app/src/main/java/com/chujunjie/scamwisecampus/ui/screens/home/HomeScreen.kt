@@ -19,13 +19,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.chujunjie.scamwisecampus.domain.model.ConfidenceCalibration
 import com.chujunjie.scamwisecampus.domain.model.Difficulty
 import com.chujunjie.scamwisecampus.domain.model.ScamCategory
 import com.chujunjie.scamwisecampus.domain.model.Scenario
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
+import com.chujunjie.scamwisecampus.ui.components.ResponsiveContent
 
 @Composable
 fun HomeScreen(
@@ -36,31 +37,35 @@ fun HomeScreen(
     onLinkVerificationClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    when {
-        uiState.isLoading -> {
-            HomeMessageContent(
-                message = "Loading your learning dashboard...",
-                showProgress = true,
-                modifier = modifier
-            )
-        }
+    ResponsiveContent(
+        modifier = modifier
+    ) {
+        when {
+            uiState.isLoading -> {
+                HomeMessageContent(
+                    message = "Loading your learning dashboard...",
+                    showProgress = true,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
 
-        uiState.errorMessage != null -> {
-            HomeMessageContent(
-                message = uiState.errorMessage,
-                modifier = modifier
-            )
-        }
+            uiState.errorMessage != null -> {
+                HomeMessageContent(
+                    message = uiState.errorMessage,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
 
-        else -> {
-            HomeDashboard(
-                uiState = uiState,
-                onScenarioClick = onScenarioClick,
-                onPracticeClick = onPracticeClick,
-                onStatisticsClick = onStatisticsClick,
-                onLinkVerificationClick = onLinkVerificationClick,
-                modifier = modifier
-            )
+            else -> {
+                HomeDashboard(
+                    uiState = uiState,
+                    onScenarioClick = onScenarioClick,
+                    onPracticeClick = onPracticeClick,
+                    onStatisticsClick = onStatisticsClick,
+                    onLinkVerificationClick = onLinkVerificationClick,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
     }
 }

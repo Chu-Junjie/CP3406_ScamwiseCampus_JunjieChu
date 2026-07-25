@@ -19,13 +19,14 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.chujunjie.scamwisecampus.domain.model.Difficulty
 import com.chujunjie.scamwisecampus.domain.model.ScamCategory
 import com.chujunjie.scamwisecampus.domain.model.Scenario
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
+import com.chujunjie.scamwisecampus.ui.components.ResponsiveContent
 
 @Composable
 fun PracticeScreen(
@@ -36,93 +37,95 @@ fun PracticeScreen(
     onScenarioClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (uiState.isLoading) {
-        LoadingContent(
-            modifier = modifier
-        )
-
-        return
-    }
-
-    Column(
+    ResponsiveContent(
         modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
     ) {
-        Text(
-            text = "Practice",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.semantics {
-                heading()
-            }
-        )
-
-        Text(
-            text = "Build safer digital judgement through realistic scenarios.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 4.dp)
-        )
-
-        Text(
-            text = "Category",
-            style = MaterialTheme.typography.titleSmall,
-            modifier = Modifier.padding(top = 20.dp)
-        )
-
-        CategoryFilterRow(
-            selectedCategory = uiState.selectedCategory,
-            onCategorySelected = onCategorySelected,
-            modifier = Modifier.padding(top = 8.dp)
-        )
-
-        Text(
-            text = "Difficulty",
-            style = MaterialTheme.typography.titleSmall,
-            modifier = Modifier.padding(top = 16.dp)
-        )
-
-        DifficultyFilterRow(
-            selectedDifficulty = uiState.selectedDifficulty,
-            onDifficultySelected = onDifficultySelected,
-            modifier = Modifier.padding(top = 8.dp)
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp, bottom = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "${uiState.scenarios.size} scenarios",
-                style = MaterialTheme.typography.titleMedium
-            )
-
-            if (
-                uiState.selectedCategory != null ||
-                uiState.selectedDifficulty != null
-            ) {
-                TextButton(
-                    onClick = onClearFilters
-                ) {
-                    Text(text = "Clear Filters")
-                }
-            }
-        }
-
-        if (uiState.scenarios.isEmpty()) {
-            EmptyPracticeContent(
-                onClearFilters = onClearFilters,
+        if (uiState.isLoading) {
+            LoadingContent(
                 modifier = Modifier.fillMaxSize()
             )
         } else {
-            ScenarioList(
-                scenarios = uiState.scenarios,
-                onScenarioClick = onScenarioClick,
-                modifier = Modifier.fillMaxSize()
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Text(
+                    text = "Practice",
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.semantics {
+                        heading()
+                    }
+                )
+
+                Text(
+                    text = "Build safer digital judgement through realistic scenarios.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+
+                Text(
+                    text = "Category",
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.padding(top = 20.dp)
+                )
+
+                CategoryFilterRow(
+                    selectedCategory = uiState.selectedCategory,
+                    onCategorySelected = onCategorySelected,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+
+                Text(
+                    text = "Difficulty",
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.padding(top = 16.dp)
+                )
+
+                DifficultyFilterRow(
+                    selectedDifficulty = uiState.selectedDifficulty,
+                    onDifficultySelected = onDifficultySelected,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 20.dp, bottom = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "${uiState.scenarios.size} scenarios",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+
+                    if (
+                        uiState.selectedCategory != null ||
+                        uiState.selectedDifficulty != null
+                    ) {
+                        TextButton(
+                            onClick = onClearFilters
+                        ) {
+                            Text(text = "Clear Filters")
+                        }
+                    }
+                }
+
+                if (uiState.scenarios.isEmpty()) {
+                    EmptyPracticeContent(
+                        onClearFilters = onClearFilters,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    ScenarioList(
+                        scenarios = uiState.scenarios,
+                        onScenarioClick = onScenarioClick,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
         }
     }
 }

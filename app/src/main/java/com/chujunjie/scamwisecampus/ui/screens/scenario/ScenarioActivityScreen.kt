@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ElevatedCard
@@ -20,15 +19,16 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.chujunjie.scamwisecampus.domain.model.ActionOption
 import com.chujunjie.scamwisecampus.domain.model.ConfidenceLevel
 import com.chujunjie.scamwisecampus.domain.model.RiskLevel
 import com.chujunjie.scamwisecampus.domain.model.WarningSign
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.LiveRegionMode
-import androidx.compose.ui.semantics.liveRegion
+import com.chujunjie.scamwisecampus.ui.components.ResponsiveContent
 
 @Composable
 fun ScenarioActivityScreen(
@@ -47,218 +47,222 @@ fun ScenarioActivityScreen(
     onViewStatistics: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val scenario = uiState.scenario
+    ResponsiveContent(
+        modifier = modifier
+    ) {
+        val scenario = uiState.scenario
 
-    when {
-        uiState.isLoading -> {
-            MessageContent(
-                message = "Loading scenario...",
-                modifier = modifier
-            )
-        }
+        when {
+            uiState.isLoading -> {
+                MessageContent(
+                    message = "Loading scenario...",
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
 
-        uiState.isScenarioMissing || scenario == null -> {
-            MessageContent(
-                message = "The selected scenario could not be found.",
-                modifier = modifier,
-                actionText = "Return to Practice",
-                onAction = onReturnToPractice
-            )
-        }
+            uiState.isScenarioMissing || scenario == null -> {
+                MessageContent(
+                    message = "The selected scenario could not be found.",
+                    modifier = Modifier.fillMaxSize(),
+                    actionText = "Return to Practice",
+                    onAction = onReturnToPractice
+                )
+            }
 
-        uiState.evaluation != null -> {
-            ScenarioResultScreen(
-                scenario = scenario,
-                selectedRiskLevel =
-                    requireNotNull(uiState.selectedRiskLevel),
-                selectedWarningSignIds =
-                    uiState.selectedWarningSignIds,
-                hasSelectedNoWarningSigns =
-                    uiState.hasSelectedNoWarningSigns,
-                selectedActionId =
-                    requireNotNull(uiState.selectedActionId),
-                selectedConfidenceLevel =
-                    requireNotNull(uiState.selectedConfidenceLevel),
-                evaluation =
-                    uiState.evaluation,
-                onRestart = onRestart,
-                onReturnHome = onReturnHome,
-                onViewStatistics = onViewStatistics,
-                modifier = modifier
-            )
-        }
+            uiState.evaluation != null -> {
+                ScenarioResultScreen(
+                    scenario = scenario,
+                    selectedRiskLevel =
+                        requireNotNull(uiState.selectedRiskLevel),
+                    selectedWarningSignIds =
+                        uiState.selectedWarningSignIds,
+                    hasSelectedNoWarningSigns =
+                        uiState.hasSelectedNoWarningSigns,
+                    selectedActionId =
+                        requireNotNull(uiState.selectedActionId),
+                    selectedConfidenceLevel =
+                        requireNotNull(uiState.selectedConfidenceLevel),
+                    evaluation =
+                        uiState.evaluation,
+                    onRestart = onRestart,
+                    onReturnHome = onReturnHome,
+                    onViewStatistics = onViewStatistics,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
 
-        else -> {
-            LazyColumn(
-                modifier = modifier.fillMaxSize(),
-                contentPadding = PaddingValues(
-                    start = 16.dp,
-                    top = 12.dp,
-                    end = 16.dp,
-                    bottom = 24.dp
-                ),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                item {
-                    TextButton(
-                        onClick = onBack
-                    ) {
-                        Text(text = "Back")
-                    }
-                }
-
-                item {
-                    Text(
-                        text = scenario.title,
-                        style = MaterialTheme.typography.headlineSmall,
-                        modifier = Modifier.semantics {
-                            heading()
-                        }
-                    )
-
-                    Text(
-                        text = scenario.sender,
-                        style = MaterialTheme.typography.bodySmall,
-                        color =
-                            MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
-                }
-
-                item {
-                    LinearProgressIndicator(
-                        progress = {
-                            uiState.currentStep.progress()
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Text(
-                        text = uiState.currentStep.displayTitle(),
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(top = 12.dp)
-                    )
-                }
-
-                item {
-                    ElevatedCard(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp)
+            else -> {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        top = 12.dp,
+                        end = 16.dp,
+                        bottom = 24.dp
+                    ),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    item {
+                        TextButton(
+                            onClick = onBack
                         ) {
-                            scenario.subject?.let { subject ->
-                                Text(
-                                    text = subject,
-                                    style =
-                                        MaterialTheme.typography.titleSmall
-                                )
-                            }
-
-                            Text(
-                                text = scenario.messageBody,
-                                style =
-                                    MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier.padding(top = 8.dp)
-                            )
-                        }
-                    }
-                }
-
-                when (uiState.currentStep) {
-                    ScenarioStep.RISK_ASSESSMENT -> {
-                        item {
-                            RiskSelectionContent(
-                                selectedRiskLevel =
-                                    uiState.selectedRiskLevel,
-                                onRiskLevelSelected =
-                                    onRiskLevelSelected
-                            )
+                            Text(text = "Back")
                         }
                     }
 
-                    ScenarioStep.WARNING_SIGNS -> {
-                        item {
-                            WarningSignSelectionContent(
-                                warningSigns =
-                                    scenario.warningSigns,
-                                selectedWarningSignIds =
-                                    uiState.selectedWarningSignIds,
-                                hasSelectedNoWarningSigns =
-                                    uiState.hasSelectedNoWarningSigns,
-                                onWarningSignToggled =
-                                    onWarningSignToggled,
-                                onNoWarningSignsSelected =
-                                    onNoWarningSignsSelected
-                            )
-                        }
-                    }
-
-                    ScenarioStep.SAFE_ACTION -> {
-                        item {
-                            ActionSelectionContent(
-                                actionOptions =
-                                    scenario.actionOptions,
-                                selectedActionId =
-                                    uiState.selectedActionId,
-                                onActionSelected =
-                                    onActionSelected
-                            )
-                        }
-                    }
-
-                    ScenarioStep.CONFIDENCE -> {
-                        item {
-                            ConfidenceSelectionContent(
-                                selectedConfidence =
-                                    uiState.selectedConfidenceLevel,
-                                onConfidenceSelected =
-                                    onConfidenceSelected
-                            )
-                        }
-                    }
-                }
-
-                uiState.validationMessage?.let { message ->
                     item {
                         Text(
-                            text = message,
-                            color =
-                                MaterialTheme.colorScheme.error,
-                            style =
-                                MaterialTheme.typography.bodyMedium,
+                            text = scenario.title,
+                            style = MaterialTheme.typography.headlineSmall,
                             modifier = Modifier.semantics {
-                                liveRegion =
-                                    LiveRegionMode.Assertive
+                                heading()
                             }
+                        )
+
+                        Text(
+                            text = scenario.sender,
+                            style = MaterialTheme.typography.bodySmall,
+                            color =
+                                MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(top = 4.dp)
                         )
                     }
-                }
 
-                item {
-                    Button(
-                        onClick = {
-                            if (
-                                uiState.currentStep ==
-                                ScenarioStep.CONFIDENCE
-                            ) {
-                                onSubmit()
-                            } else {
-                                onContinue()
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = if (
-                                uiState.currentStep ==
-                                ScenarioStep.CONFIDENCE
-                            ) {
-                                "Submit Answer"
-                            } else {
-                                "Continue"
-                            }
+                    item {
+                        LinearProgressIndicator(
+                            progress = {
+                                uiState.currentStep.progress()
+                            },
+                            modifier = Modifier.fillMaxWidth()
                         )
+
+                        Text(
+                            text = uiState.currentStep.displayTitle(),
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.padding(top = 12.dp)
+                        )
+                    }
+
+                    item {
+                        ElevatedCard(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+                                scenario.subject?.let { subject ->
+                                    Text(
+                                        text = subject,
+                                        style =
+                                            MaterialTheme.typography.titleSmall
+                                    )
+                                }
+
+                                Text(
+                                    text = scenario.messageBody,
+                                    style =
+                                        MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.padding(top = 8.dp)
+                                )
+                            }
+                        }
+                    }
+
+                    when (uiState.currentStep) {
+                        ScenarioStep.RISK_ASSESSMENT -> {
+                            item {
+                                RiskSelectionContent(
+                                    selectedRiskLevel =
+                                        uiState.selectedRiskLevel,
+                                    onRiskLevelSelected =
+                                        onRiskLevelSelected
+                                )
+                            }
+                        }
+
+                        ScenarioStep.WARNING_SIGNS -> {
+                            item {
+                                WarningSignSelectionContent(
+                                    warningSigns =
+                                        scenario.warningSigns,
+                                    selectedWarningSignIds =
+                                        uiState.selectedWarningSignIds,
+                                    hasSelectedNoWarningSigns =
+                                        uiState.hasSelectedNoWarningSigns,
+                                    onWarningSignToggled =
+                                        onWarningSignToggled,
+                                    onNoWarningSignsSelected =
+                                        onNoWarningSignsSelected
+                                )
+                            }
+                        }
+
+                        ScenarioStep.SAFE_ACTION -> {
+                            item {
+                                ActionSelectionContent(
+                                    actionOptions =
+                                        scenario.actionOptions,
+                                    selectedActionId =
+                                        uiState.selectedActionId,
+                                    onActionSelected =
+                                        onActionSelected
+                                )
+                            }
+                        }
+
+                        ScenarioStep.CONFIDENCE -> {
+                            item {
+                                ConfidenceSelectionContent(
+                                    selectedConfidence =
+                                        uiState.selectedConfidenceLevel,
+                                    onConfidenceSelected =
+                                        onConfidenceSelected
+                                )
+                            }
+                        }
+                    }
+
+                    uiState.validationMessage?.let { message ->
+                        item {
+                            Text(
+                                text = message,
+                                color =
+                                    MaterialTheme.colorScheme.error,
+                                style =
+                                    MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.semantics {
+                                    liveRegion =
+                                        LiveRegionMode.Assertive
+                                }
+                            )
+                        }
+                    }
+
+                    item {
+                        Button(
+                            onClick = {
+                                if (
+                                    uiState.currentStep ==
+                                    ScenarioStep.CONFIDENCE
+                                ) {
+                                    onSubmit()
+                                } else {
+                                    onContinue()
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = if (
+                                    uiState.currentStep ==
+                                    ScenarioStep.CONFIDENCE
+                                ) {
+                                    "Submit Answer"
+                                } else {
+                                    "Continue"
+                                }
+                            )
+                        }
                     }
                 }
             }

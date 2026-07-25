@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -28,13 +29,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.chujunjie.scamwisecampus.domain.model.ThemeMode
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.foundation.layout.size
-import androidx.compose.ui.semantics.LiveRegionMode
-import androidx.compose.ui.semantics.liveRegion
+import com.chujunjie.scamwisecampus.ui.components.ResponsiveContent
 
 @Composable
 fun SettingsScreen(
@@ -73,27 +74,31 @@ fun SettingsScreen(
         )
     }
 
-    Column(
-        modifier = modifier.fillMaxSize()
+    ResponsiveContent(
+        modifier = modifier
     ) {
-        SnackbarHost(
-            hostState = snackbarHostState
-        )
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            SnackbarHost(
+                hostState = snackbarHostState
+            )
 
-        if (uiState.isLoading) {
-            LoadingSettingsContent(
-                modifier = Modifier.fillMaxSize()
-            )
-        } else {
-            SettingsContent(
-                uiState = uiState,
-                onThemeModeSelected =
-                    onThemeModeSelected,
-                onClearHistoryClick = {
-                    showClearHistoryDialog = true
-                },
-                modifier = Modifier.fillMaxSize()
-            )
+            if (uiState.isLoading) {
+                LoadingSettingsContent(
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
+                SettingsContent(
+                    uiState = uiState,
+                    onThemeModeSelected =
+                        onThemeModeSelected,
+                    onClearHistoryClick = {
+                        showClearHistoryDialog = true
+                    },
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
     }
 }

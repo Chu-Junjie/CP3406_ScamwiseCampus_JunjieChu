@@ -1,10 +1,12 @@
 package com.chujunjie.scamwisecampus.ui.screens.statistics
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,16 +22,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.chujunjie.scamwisecampus.domain.model.AttemptRecord
 import com.chujunjie.scamwisecampus.domain.model.ConfidenceCalibration
 import com.chujunjie.scamwisecampus.domain.model.Difficulty
 import com.chujunjie.scamwisecampus.domain.model.ScamCategory
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.LiveRegionMode
-import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.liveRegion
+import com.chujunjie.scamwisecampus.ui.components.ResponsiveContent
 
 @Composable
 fun StatisticsScreen(
@@ -37,31 +40,37 @@ fun StatisticsScreen(
     onPracticeClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    when {
-        uiState.isLoading -> {
-            LoadingStatisticsContent(modifier = modifier)
-        }
+    ResponsiveContent(
+        modifier = modifier
+    ) {
+        when {
+            uiState.isLoading -> {
+                LoadingStatisticsContent(
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
 
-        uiState.errorMessage != null -> {
-            StatisticsMessageContent(
-                message = uiState.errorMessage,
-                modifier = modifier
-            )
-        }
+            uiState.errorMessage != null -> {
+                StatisticsMessageContent(
+                    message = uiState.errorMessage,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
 
-        !uiState.hasAttempts -> {
-            EmptyStatisticsContent(
-                onPracticeClick = onPracticeClick,
-                modifier = modifier
-            )
-        }
+            !uiState.hasAttempts -> {
+                EmptyStatisticsContent(
+                    onPracticeClick = onPracticeClick,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
 
-        else -> {
-            StatisticsDashboard(
-                uiState = uiState,
-                onPracticeClick = onPracticeClick,
-                modifier = modifier
-            )
+            else -> {
+                StatisticsDashboard(
+                    uiState = uiState,
+                    onPracticeClick = onPracticeClick,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
     }
 }
@@ -72,101 +81,248 @@ private fun StatisticsDashboard(
     onPracticeClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(
-            start = 16.dp,
-            top = 20.dp,
-            end = 16.dp,
-            bottom = 32.dp
-        ),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+    BoxWithConstraints(
+        modifier = modifier.fillMaxSize()
     ) {
-        item {
-            Text(
-                text = "Statistics",
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.semantics {
-                    heading()
-                }
-            )
+        val useTwoColumns = maxWidth >= 600.dp
+        val recommendedCategory = uiState.recommendedCategory
 
-            Text(
-                text = "Review your practice history and identify where to improve.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-        }
-
-        item {
-            SummaryCard(
-                totalAttempts = uiState.totalAttempts,
-                averageScore = uiState.averageScore,
-                highestScore = uiState.highestScore
-            )
-        }
-
-        uiState.recommendedCategory?.let { category ->
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                start = 16.dp,
+                top = 20.dp,
+                end = 16.dp,
+                bottom = 32.dp
+            ),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
             item {
-                RecommendationCard(
-                    category = category,
-                    onPracticeClick = onPracticeClick
-                )
-            }
-        }
-
-        item {
-            AccuracyCard(
-                riskAccuracyPercent =
-                    uiState.riskAccuracyPercent,
-                safeActionAccuracyPercent =
-                    uiState.safeActionAccuracyPercent
-            )
-        }
-
-        item {
-            CalibrationCard(uiState = uiState)
-        }
-
-        item {
-            Text(
-                text = "Performance by Category",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.semantics {
-                    heading()
-                }
-            )
-        }
-
-        items(
-            items = uiState.categoryPerformance,
-            key = { performance ->
-                performance.category.name
-            }
-        ) { performance ->
-            CategoryPerformanceCard(
-                performance = performance
-            )
-        }
-
-        item {
-            Text(
-                text = "Recent Attempts",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier
-                    .padding(top = 4.dp)
-                    .semantics {
+                Text(
+                    text = "Statistics",
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.semantics {
                         heading()
                     }
-            )
-        }
+                )
 
-        items(
-            items = uiState.recentAttempts,
-            key = { attempt -> attempt.attemptId }
-        ) { attempt ->
-            RecentAttemptCard(attempt = attempt)
+                Text(
+                    text = "Review your practice history and identify where to improve.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+
+            if (useTwoColumns) {
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement =
+                            Arrangement.spacedBy(16.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            SummaryCard(
+                                totalAttempts = uiState.totalAttempts,
+                                averageScore = uiState.averageScore,
+                                highestScore = uiState.highestScore
+                            )
+                        }
+
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            AccuracyCard(
+                                riskAccuracyPercent =
+                                    uiState.riskAccuracyPercent,
+                                safeActionAccuracyPercent =
+                                    uiState.safeActionAccuracyPercent
+                            )
+                        }
+                    }
+                }
+
+                if (recommendedCategory != null) {
+                    item {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement =
+                                Arrangement.spacedBy(16.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                RecommendationCard(
+                                    category = recommendedCategory,
+                                    onPracticeClick = onPracticeClick
+                                )
+                            }
+
+                            Column(
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                CalibrationCard(
+                                    uiState = uiState
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    item {
+                        CalibrationCard(
+                            uiState = uiState
+                        )
+                    }
+                }
+            } else {
+                item {
+                    SummaryCard(
+                        totalAttempts = uiState.totalAttempts,
+                        averageScore = uiState.averageScore,
+                        highestScore = uiState.highestScore
+                    )
+                }
+
+                recommendedCategory?.let { category ->
+                    item {
+                        RecommendationCard(
+                            category = category,
+                            onPracticeClick = onPracticeClick
+                        )
+                    }
+                }
+
+                item {
+                    AccuracyCard(
+                        riskAccuracyPercent =
+                            uiState.riskAccuracyPercent,
+                        safeActionAccuracyPercent =
+                            uiState.safeActionAccuracyPercent
+                    )
+                }
+
+                item {
+                    CalibrationCard(
+                        uiState = uiState
+                    )
+                }
+            }
+
+            item {
+                Text(
+                    text = "Performance by Category",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.semantics {
+                        heading()
+                    }
+                )
+            }
+
+            if (useTwoColumns) {
+                items(
+                    items = uiState.categoryPerformance.chunked(2),
+                    key = { row ->
+                        row.joinToString(
+                            separator = "-"
+                        ) { performance ->
+                            performance.category.name
+                        }
+                    }
+                ) { row ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement =
+                            Arrangement.spacedBy(16.dp)
+                    ) {
+                        row.forEach { performance ->
+                            Column(
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                CategoryPerformanceCard(
+                                    performance = performance
+                                )
+                            }
+                        }
+
+                        if (row.size == 1) {
+                            Spacer(
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+                }
+            } else {
+                items(
+                    items = uiState.categoryPerformance,
+                    key = { performance ->
+                        performance.category.name
+                    }
+                ) { performance ->
+                    CategoryPerformanceCard(
+                        performance = performance
+                    )
+                }
+            }
+
+            item {
+                Text(
+                    text = "Recent Attempts",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier
+                        .padding(top = 4.dp)
+                        .semantics {
+                            heading()
+                        }
+                )
+            }
+
+            if (useTwoColumns) {
+                items(
+                    items = uiState.recentAttempts.chunked(2),
+                    key = { row ->
+                        row.joinToString(
+                            separator = "-"
+                        ) { attempt ->
+                            attempt.attemptId.toString()
+                        }
+                    }
+                ) { row ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement =
+                            Arrangement.spacedBy(16.dp)
+                    ) {
+                        row.forEach { attempt ->
+                            Column(
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                RecentAttemptCard(
+                                    attempt = attempt
+                                )
+                            }
+                        }
+
+                        if (row.size == 1) {
+                            Spacer(
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+                }
+            } else {
+                items(
+                    items = uiState.recentAttempts,
+                    key = { attempt ->
+                        attempt.attemptId
+                    }
+                ) { attempt ->
+                    RecentAttemptCard(
+                        attempt = attempt
+                    )
+                }
+            }
         }
     }
 }
