@@ -1,5 +1,6 @@
 package com.chujunjie.scamwisecampus.ui.screens.scenario
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,11 +20,13 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.chujunjie.scamwisecampus.R
 import com.chujunjie.scamwisecampus.domain.model.ActionOption
 import com.chujunjie.scamwisecampus.domain.model.ConfidenceLevel
 import com.chujunjie.scamwisecampus.domain.model.RiskLevel
@@ -55,16 +58,22 @@ fun ScenarioActivityScreen(
         when {
             uiState.isLoading -> {
                 MessageContent(
-                    message = "Loading scenario...",
+                    message = stringResource(
+                        R.string.scenario_loading
+                    ),
                     modifier = Modifier.fillMaxSize()
                 )
             }
 
             uiState.isScenarioMissing || scenario == null -> {
                 MessageContent(
-                    message = "The selected scenario could not be found.",
+                    message = stringResource(
+                        R.string.scenario_not_found
+                    ),
                     modifier = Modifier.fillMaxSize(),
-                    actionText = "Return to Practice",
+                    actionText = stringResource(
+                        R.string.scenario_return_to_practice
+                    ),
                     onAction = onReturnToPractice
                 )
             }
@@ -82,8 +91,7 @@ fun ScenarioActivityScreen(
                         requireNotNull(uiState.selectedActionId),
                     selectedConfidenceLevel =
                         requireNotNull(uiState.selectedConfidenceLevel),
-                    evaluation =
-                        uiState.evaluation,
+                    evaluation = uiState.evaluation,
                     onRestart = onRestart,
                     onReturnHome = onReturnHome,
                     onViewStatistics = onViewStatistics,
@@ -100,20 +108,26 @@ fun ScenarioActivityScreen(
                         end = 16.dp,
                         bottom = 24.dp
                     ),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement =
+                        Arrangement.spacedBy(16.dp)
                 ) {
                     item {
                         TextButton(
                             onClick = onBack
                         ) {
-                            Text(text = "Back")
+                            Text(
+                                text = stringResource(
+                                    R.string.scenario_back
+                                )
+                            )
                         }
                     }
 
                     item {
                         Text(
                             text = scenario.title,
-                            style = MaterialTheme.typography.headlineSmall,
+                            style =
+                                MaterialTheme.typography.headlineSmall,
                             modifier = Modifier.semantics {
                                 heading()
                             }
@@ -121,7 +135,8 @@ fun ScenarioActivityScreen(
 
                         Text(
                             text = scenario.sender,
-                            style = MaterialTheme.typography.bodySmall,
+                            style =
+                                MaterialTheme.typography.bodySmall,
                             color =
                                 MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(top = 4.dp)
@@ -137,8 +152,11 @@ fun ScenarioActivityScreen(
                         )
 
                         Text(
-                            text = uiState.currentStep.displayTitle(),
-                            style = MaterialTheme.typography.titleMedium,
+                            text = stringResource(
+                                uiState.currentStep.displayTitleRes()
+                            ),
+                            style =
+                                MaterialTheme.typography.titleMedium,
                             modifier = Modifier.padding(top = 12.dp)
                         )
                     }
@@ -154,15 +172,20 @@ fun ScenarioActivityScreen(
                                     Text(
                                         text = subject,
                                         style =
-                                            MaterialTheme.typography.titleSmall
+                                            MaterialTheme
+                                                .typography
+                                                .titleSmall
                                     )
                                 }
 
                                 Text(
                                     text = scenario.messageBody,
                                     style =
-                                        MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.padding(top = 8.dp)
+                                        MaterialTheme
+                                            .typography
+                                            .bodyLarge,
+                                    modifier =
+                                        Modifier.padding(top = 8.dp)
                                 )
                             }
                         }
@@ -188,7 +211,8 @@ fun ScenarioActivityScreen(
                                     selectedWarningSignIds =
                                         uiState.selectedWarningSignIds,
                                     hasSelectedNoWarningSigns =
-                                        uiState.hasSelectedNoWarningSigns,
+                                        uiState
+                                            .hasSelectedNoWarningSigns,
                                     onWarningSignToggled =
                                         onWarningSignToggled,
                                     onNoWarningSignsSelected =
@@ -214,7 +238,8 @@ fun ScenarioActivityScreen(
                             item {
                                 ConfidenceSelectionContent(
                                     selectedConfidence =
-                                        uiState.selectedConfidenceLevel,
+                                        uiState
+                                            .selectedConfidenceLevel,
                                     onConfidenceSelected =
                                         onConfidenceSelected
                                 )
@@ -229,7 +254,9 @@ fun ScenarioActivityScreen(
                                 color =
                                     MaterialTheme.colorScheme.error,
                                 style =
-                                    MaterialTheme.typography.bodyMedium,
+                                    MaterialTheme
+                                        .typography
+                                        .bodyMedium,
                                 modifier = Modifier.semantics {
                                     liveRegion =
                                         LiveRegionMode.Assertive
@@ -253,14 +280,17 @@ fun ScenarioActivityScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
-                                text = if (
-                                    uiState.currentStep ==
-                                    ScenarioStep.CONFIDENCE
-                                ) {
-                                    "Submit Answer"
-                                } else {
-                                    "Continue"
-                                }
+                                text = stringResource(
+                                    if (
+                                        uiState.currentStep ==
+                                        ScenarioStep.CONFIDENCE
+                                    ) {
+                                        R.string
+                                            .scenario_submit_answer
+                                    } else {
+                                        R.string.scenario_continue
+                                    }
+                                )
                             )
                         }
                     }
@@ -279,13 +309,17 @@ private fun RiskSelectionContent(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "How risky is this message?",
+            text = stringResource(
+                R.string.scenario_risk_question
+            ),
             style = MaterialTheme.typography.titleMedium
         )
 
         RiskLevel.entries.forEach { riskLevel ->
             SelectionRow(
-                label = riskLevel.displayName(),
+                label = stringResource(
+                    riskLevel.displayNameRes()
+                ),
                 selected = selectedRiskLevel == riskLevel,
                 onClick = {
                     onRiskLevelSelected(riskLevel)
@@ -307,12 +341,16 @@ private fun WarningSignSelectionContent(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "Which warning signs can you identify?",
+            text = stringResource(
+                R.string.scenario_warning_signs_question
+            ),
             style = MaterialTheme.typography.titleMedium
         )
 
         Text(
-            text = "Select all that apply.",
+            text = stringResource(
+                R.string.scenario_select_all_that_apply
+            ),
             style = MaterialTheme.typography.bodyMedium
         )
 
@@ -328,7 +366,9 @@ private fun WarningSignSelectionContent(
         }
 
         CheckboxRow(
-            label = "No clear warning signs",
+            label = stringResource(
+                R.string.scenario_no_clear_warning_signs
+            ),
             checked = hasSelectedNoWarningSigns,
             onClick = onNoWarningSignsSelected
         )
@@ -345,7 +385,9 @@ private fun ActionSelectionContent(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "What is the safest next action?",
+            text = stringResource(
+                R.string.scenario_safe_action_question
+            ),
             style = MaterialTheme.typography.titleMedium
         )
 
@@ -370,13 +412,17 @@ private fun ConfidenceSelectionContent(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "How confident are you in your answer?",
+            text = stringResource(
+                R.string.scenario_confidence_question
+            ),
             style = MaterialTheme.typography.titleMedium
         )
 
         ConfidenceLevel.entries.forEach { confidenceLevel ->
             SelectionRow(
-                label = confidenceLevel.displayName(),
+                label = stringResource(
+                    confidenceLevel.displayNameRes()
+                ),
                 selected =
                     selectedConfidence == confidenceLevel,
                 onClick = {
@@ -407,8 +453,7 @@ private fun SelectionRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp),
-            verticalAlignment =
-                Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically
         ) {
             RadioButton(
                 selected = selected,
@@ -417,9 +462,7 @@ private fun SelectionRow(
 
             Text(
                 text = label,
-                modifier = Modifier.padding(
-                    start = 8.dp
-                )
+                modifier = Modifier.padding(start = 8.dp)
             )
         }
     }
@@ -445,8 +488,7 @@ private fun CheckboxRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp),
-            verticalAlignment =
-                Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Checkbox(
                 checked = checked,
@@ -455,9 +497,7 @@ private fun CheckboxRow(
 
             Text(
                 text = label,
-                modifier = Modifier.padding(
-                    start = 8.dp
-                )
+                modifier = Modifier.padding(start = 8.dp)
             )
         }
     }
@@ -475,18 +515,14 @@ private fun MessageContent(
             .fillMaxSize()
             .padding(24.dp)
             .semantics {
-                liveRegion =
-                    LiveRegionMode.Polite
+                liveRegion = LiveRegionMode.Polite
             },
-        verticalArrangement =
-            Arrangement.Center,
-        horizontalAlignment =
-            Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = message,
-            style =
-                MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge
         )
 
         if (
@@ -495,9 +531,7 @@ private fun MessageContent(
         ) {
             Button(
                 onClick = onAction,
-                modifier = Modifier.padding(
-                    top = 16.dp
-                )
+                modifier = Modifier.padding(top = 16.dp)
             ) {
                 Text(text = actionText)
             }
@@ -514,44 +548,47 @@ private fun ScenarioStep.progress(): Float {
     }
 }
 
-private fun ScenarioStep.displayTitle(): String {
+@StringRes
+private fun ScenarioStep.displayTitleRes(): Int {
     return when (this) {
         ScenarioStep.RISK_ASSESSMENT ->
-            "1. Assess Risk"
+            R.string.scenario_step_assess_risk
 
         ScenarioStep.WARNING_SIGNS ->
-            "2. Find Warning Signs"
+            R.string.scenario_step_find_warning_signs
 
         ScenarioStep.SAFE_ACTION ->
-            "3. Choose an Action"
+            R.string.scenario_step_choose_action
 
         ScenarioStep.CONFIDENCE ->
-            "4. Rate Confidence"
+            R.string.scenario_step_rate_confidence
     }
 }
 
-private fun RiskLevel.displayName(): String {
+@StringRes
+private fun RiskLevel.displayNameRes(): Int {
     return when (this) {
         RiskLevel.HIGH_RISK ->
-            "High Risk"
+            R.string.risk_level_high
 
         RiskLevel.NEEDS_VERIFICATION ->
-            "Needs Verification"
+            R.string.risk_level_needs_verification
 
         RiskLevel.NO_CLEAR_THREAT ->
-            "No Clear Threat Identified"
+            R.string.risk_level_no_clear_threat
     }
 }
 
-private fun ConfidenceLevel.displayName(): String {
+@StringRes
+private fun ConfidenceLevel.displayNameRes(): Int {
     return when (this) {
         ConfidenceLevel.NOT_CONFIDENT ->
-            "Not Confident"
+            R.string.confidence_not_confident
 
         ConfidenceLevel.SOMEWHAT_CONFIDENT ->
-            "Somewhat Confident"
+            R.string.confidence_somewhat_confident
 
         ConfidenceLevel.VERY_CONFIDENT ->
-            "Very Confident"
+            R.string.confidence_very_confident
     }
 }

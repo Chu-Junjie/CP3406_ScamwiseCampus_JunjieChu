@@ -65,4 +65,31 @@
         <item quantity="one">%1$d scenario</item>
         <item quantity="other">%1$d scenarios</item>
     </plurals>
+
+    <string name="scenario_loading">Loading scenario...</string>
+    <string name="scenario_not_found">The selected scenario could not be found.</string>
+    <string name="scenario_return_to_practice">Return to Practice</string>
+    <string name="scenario_back">Back</string>
+    <string name="scenario_continue">Continue</string>
+    <string name="scenario_submit_answer">Submit Answer</string>
+
+    <string name="scenario_step_assess_risk">1. Assess Risk</string>
+    <string name="scenario_step_find_warning_signs">2. Find Warning Signs</string>
+    <string name="scenario_step_choose_action">3. Choose an Action</string>
+    <string name="scenario_step_rate_confidence">4. Rate Confidence</string>
+
+    <string name="scenario_risk_question">How risky is this message?</string>
+    <string name="scenario_warning_signs_question">Which warning signs can you identify?</string>
+    <string name="scenario_select_all_that_apply">Select all that apply.</string>
+    <string name="scenario_no_clear_warning_signs">No clear warning signs</string>
+    <string name="scenario_safe_action_question">What is the safest next action?</string>
+    <string name="scenario_confidence_question">How confident are you in your answer?</string>
+
+    <string name="risk_level_high">High Risk</string>
+    <string name="risk_level_needs_verification">Needs Verification</string>
+    <string name="risk_level_no_clear_threat">No Clear Threat Identified</string>
+
+    <string name="confidence_not_confident">Not Confident</string>
+    <string name="confidence_somewhat_confident">Somewhat Confident</string>
+    <string name="confidence_very_confident">Very Confident</string>
 </resources>
