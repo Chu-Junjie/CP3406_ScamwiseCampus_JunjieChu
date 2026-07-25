@@ -34,7 +34,7 @@ class SettingsViewModel(
         viewModelScope.launch {
             _uiState.update { state ->
                 state.copy(
-                    feedbackMessage = null
+                    feedback = null
                 )
             }
 
@@ -43,8 +43,8 @@ class SettingsViewModel(
             }.onFailure {
                 _uiState.update { state ->
                     state.copy(
-                        feedbackMessage =
-                            "Theme preference could not be saved."
+                        feedback =
+                            SettingsFeedback.THEME_SAVE_FAILED
                     )
                 }
             }
@@ -60,7 +60,7 @@ class SettingsViewModel(
             _uiState.update { state ->
                 state.copy(
                     isClearingHistory = true,
-                    feedbackMessage = null
+                    feedback = null
                 )
             }
 
@@ -70,16 +70,16 @@ class SettingsViewModel(
                 _uiState.update { state ->
                     state.copy(
                         isClearingHistory = false,
-                        feedbackMessage =
-                            "Practice history cleared."
+                        feedback =
+                            SettingsFeedback.HISTORY_CLEARED
                     )
                 }
             }.onFailure {
                 _uiState.update { state ->
                     state.copy(
                         isClearingHistory = false,
-                        feedbackMessage =
-                            "Practice history could not be cleared."
+                        feedback =
+                            SettingsFeedback.HISTORY_CLEAR_FAILED
                     )
                 }
             }
@@ -89,7 +89,7 @@ class SettingsViewModel(
     fun dismissFeedback() {
         _uiState.update { state ->
             state.copy(
-                feedbackMessage = null
+                feedback = null
             )
         }
     }

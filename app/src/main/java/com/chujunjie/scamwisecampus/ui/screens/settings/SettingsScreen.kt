@@ -55,11 +55,13 @@ fun SettingsScreen(
         mutableStateOf(false)
     }
 
-    LaunchedEffect(uiState.feedbackMessage) {
-        val message = uiState.feedbackMessage
+    val feedbackMessage = uiState.feedback?.let { feedback ->
+        stringResource(feedback.messageRes())
+    }
 
-        if (message != null) {
-            snackbarHostState.showSnackbar(message)
+    LaunchedEffect(feedbackMessage) {
+        if (feedbackMessage != null) {
+            snackbarHostState.showSnackbar(feedbackMessage)
             onDismissFeedback()
         }
     }
@@ -464,3 +466,18 @@ private fun ThemeMode.descriptionRes(): Int {
             R.string.theme_mode_dark_description
     }
 }
+
+@StringRes
+private fun SettingsFeedback.messageRes(): Int {
+    return when (this) {
+        SettingsFeedback.THEME_SAVE_FAILED ->
+            R.string.settings_theme_save_failed
+
+        SettingsFeedback.HISTORY_CLEARED ->
+            R.string.settings_history_cleared
+
+        SettingsFeedback.HISTORY_CLEAR_FAILED ->
+            R.string.settings_history_clear_failed
+    }
+}
+

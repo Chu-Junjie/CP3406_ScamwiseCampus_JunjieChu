@@ -32,8 +32,8 @@ class StatisticsViewModel(
                 .catch {
                     _uiState.value = StatisticsUiState(
                         isLoading = false,
-                        errorMessage =
-                            "Statistics could not be loaded."
+                        error =
+                            StatisticsStatusMessage.LOAD_FAILED
                     )
                 }
                 .collect { attempts ->
@@ -70,7 +70,7 @@ private fun List<AttemptRecord>.toStatisticsUiState(): StatisticsUiState {
                         .maxOf { attempt -> attempt.totalScore },
                     riskAccuracyPercent = calculatePercentage(
                         matchingCount = categoryAttempts.count {
-                            attempt -> attempt.isRiskCorrect
+                                attempt -> attempt.isRiskCorrect
                         },
                         totalCount = categoryAttempts.size
                     ),
@@ -78,8 +78,8 @@ private fun List<AttemptRecord>.toStatisticsUiState(): StatisticsUiState {
                         calculatePercentage(
                             matchingCount =
                                 categoryAttempts.count {
-                                    attempt ->
-                                        attempt.isSafeActionCorrect
+                                        attempt ->
+                                    attempt.isSafeActionCorrect
                                 },
                             totalCount =
                                 categoryAttempts.size
@@ -93,9 +93,9 @@ private fun List<AttemptRecord>.toStatisticsUiState(): StatisticsUiState {
     val recommendedCategory =
         categoryPerformance.minWithOrNull(
             compareBy<CategoryPerformance> {
-                performance -> performance.averageScore
+                    performance -> performance.averageScore
             }.thenBy {
-                performance -> performance.attemptCount
+                    performance -> performance.attemptCount
             }
         )?.category
 
@@ -158,10 +158,10 @@ private fun calculatePercentage(
     }
 
     return (
-        matchingCount.toDouble() /
-            totalCount *
-            PERCENTAGE_MAXIMUM
-        )
+            matchingCount.toDouble() /
+                    totalCount *
+                    PERCENTAGE_MAXIMUM
+            )
         .roundToInt()
 }
 

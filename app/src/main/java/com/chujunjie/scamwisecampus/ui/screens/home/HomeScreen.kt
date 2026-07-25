@@ -21,14 +21,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.chujunjie.scamwisecampus.R
 import com.chujunjie.scamwisecampus.domain.model.ConfidenceCalibration
 import com.chujunjie.scamwisecampus.domain.model.Difficulty
 import com.chujunjie.scamwisecampus.domain.model.ScamCategory
 import com.chujunjie.scamwisecampus.domain.model.Scenario
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import com.chujunjie.scamwisecampus.ui.components.ResponsiveContent
 
 @Composable
@@ -52,9 +52,11 @@ fun HomeScreen(
                 )
             }
 
-            uiState.errorMessage != null -> {
+            uiState.error != null -> {
                 HomeMessageContent(
-                    message = uiState.errorMessage,
+                    message = stringResource(
+                        uiState.error.messageRes()
+                    ),
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -449,3 +451,12 @@ private fun ConfidenceCalibration.displayNameRes(): Int {
             R.string.calibration_cautious_but_incorrect
     }
 }
+
+@StringRes
+private fun HomeStatusMessage.messageRes(): Int {
+    return when (this) {
+        HomeStatusMessage.LOAD_FAILED ->
+            R.string.home_load_failed
+    }
+}
+

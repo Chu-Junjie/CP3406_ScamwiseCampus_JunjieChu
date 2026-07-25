@@ -13,11 +13,23 @@ data class ScenarioActivityUiState(
     val hasSelectedNoWarningSigns: Boolean = false,
     val selectedActionId: String? = null,
     val selectedConfidenceLevel: ConfidenceLevel? = null,
-    val validationMessage: String? = null,
+    val validationError: ScenarioValidationError? = null,
     val evaluation: AttemptEvaluation? = null,
     val isSavingAttempt: Boolean = false,
     val isAttemptSaved: Boolean = false,
-    val saveErrorMessage: String? = null,
+    val saveStatus: ScenarioSaveStatus? = null,
     val isLoading: Boolean = true,
     val isScenarioMissing: Boolean = false
 )
+
+enum class ScenarioValidationError {
+    RISK_LEVEL_REQUIRED,
+    WARNING_SIGN_REQUIRED,
+    ACTION_REQUIRED,
+    CONFIDENCE_REQUIRED
+}
+
+enum class ScenarioSaveStatus {
+    SAVE_FAILED
+}
+

@@ -33,7 +33,7 @@
     <string name="common_not_available">Not available</string>
     <string name="score_out_of_100">%1$d / 100</string>
     <string name="fraction_format">%1$d / %2$d</string>
-    <string name="scenario_category_difficulty_format">%1$s 鈥?%2$s</string>
+    <string name="scenario_category_difficulty_format">%1$s 閳?%2$s</string>
 
     <string name="category_job">Job</string>
     <string name="category_banking">Banking</string>
@@ -126,7 +126,7 @@
     <string name="result_missed_warning_signs">Missed warning signs:</string>
     <string name="result_incorrectly_selected">Incorrectly selected:</string>
     <string name="result_all_warning_signs_correct">You identified all warning signs correctly.</string>
-    <string name="result_bullet_format">• %1$s</string>
+    <string name="result_bullet_format">鈥?%1$s</string>
 
     <string name="calibration_description_well_calibrated">Your confidence matched a strong answer.</string>
     <string name="calibration_description_underconfident">Your answer was strong, but you may be underestimating your judgement.</string>
@@ -232,7 +232,7 @@
     <string name="link_threat_safety_advice">Do not sign in, download files, or submit payment details. Verify the service through an official app or manually entered address.</string>
     <string name="link_google_advisory">Advisory provided by Google</string>
     <string name="link_check_another_url">Check Another URL</string>
-    <string name="link_threat_bullet_format">• %1$s</string>
+    <string name="link_threat_bullet_format">鈥?%1$s</string>
 
     <string name="link_threat_social_engineering">Social engineering or phishing</string>
     <string name="link_threat_malware">Malware</string>
@@ -256,4 +256,22 @@
     <string name="link_validation_normalisation_failed">The URL could not be normalised.</string>
 
     <string name="link_network_error">The URL could not be checked. Confirm your internet connection and try again.</string>
+
+    <string name="home_load_failed">Home information could not be loaded.</string>
+
+    <string name="statistics_load_failed">Statistics could not be loaded.</string>
+
+    <string name="settings_theme_save_failed">Theme preference could not be saved.</string>
+
+    <string name="settings_history_cleared">Practice history cleared.</string>
+
+    <string name="settings_history_clear_failed">Practice history could not be cleared.</string>
+
+    <!-- Stage 4, Step 9 -->
+    <string name="scenario_validation_risk_required">Select a risk level to continue.</string>
+    <string name="scenario_validation_warning_required">Select at least one warning sign or choose no clear warning signs.</string>
+    <string name="scenario_validation_action_required">Select an action to continue.</string>
+    <string name="scenario_validation_confidence_required">Select your confidence level before submitting.</string>
+    <string name="scenario_save_failed_title">Result Not Saved</string>
+    <string name="scenario_save_failed_message">Your result is available, but this attempt could not be saved.</string>
 </resources>

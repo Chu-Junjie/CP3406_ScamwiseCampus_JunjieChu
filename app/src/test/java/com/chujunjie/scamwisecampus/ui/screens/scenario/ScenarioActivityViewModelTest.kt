@@ -67,8 +67,8 @@ class ScenarioActivityViewModelTest {
         viewModel.continueToNextStep()
 
         assertEquals(
-            "Select a risk level to continue.",
-            viewModel.uiState.value.validationMessage
+            ScenarioValidationError.RISK_LEVEL_REQUIRED,
+            viewModel.uiState.value.validationError
         )
     }
 
@@ -111,7 +111,7 @@ class ScenarioActivityViewModelTest {
         assertTrue(savedAttempt.completedAtEpochMillis > 0)
         assertTrue(state.isAttemptSaved)
         assertFalse(state.isSavingAttempt)
-        assertNull(state.saveErrorMessage)
+        assertNull(state.saveStatus)
     }
 
     @Test
@@ -145,8 +145,8 @@ class ScenarioActivityViewModelTest {
         assertFalse(state.isSavingAttempt)
         assertFalse(state.isAttemptSaved)
         assertEquals(
-            "Your result is available, but this attempt could not be saved.",
-            state.saveErrorMessage
+            ScenarioSaveStatus.SAVE_FAILED,
+            state.saveStatus
         )
     }
 
@@ -197,7 +197,7 @@ class ScenarioActivityViewModelTest {
         assertNull(state.evaluation)
         assertFalse(state.isSavingAttempt)
         assertFalse(state.isAttemptSaved)
-        assertNull(state.saveErrorMessage)
+        assertNull(state.saveStatus)
     }
 
     private fun createViewModel(

@@ -48,7 +48,7 @@ class ScenarioActivityViewModel(
         _uiState.update { state ->
             state.copy(
                 selectedRiskLevel = riskLevel,
-                validationMessage = null
+                validationError = null
             )
         }
     }
@@ -65,7 +65,7 @@ class ScenarioActivityViewModel(
             state.copy(
                 selectedWarningSignIds = updatedIds,
                 hasSelectedNoWarningSigns = false,
-                validationMessage = null
+                validationError = null
             )
         }
     }
@@ -76,7 +76,7 @@ class ScenarioActivityViewModel(
                 selectedWarningSignIds = emptySet(),
                 hasSelectedNoWarningSigns =
                     !state.hasSelectedNoWarningSigns,
-                validationMessage = null
+                validationError = null
             )
         }
     }
@@ -85,7 +85,7 @@ class ScenarioActivityViewModel(
         _uiState.update { state ->
             state.copy(
                 selectedActionId = actionId,
-                validationMessage = null
+                validationError = null
             )
         }
     }
@@ -94,7 +94,7 @@ class ScenarioActivityViewModel(
         _uiState.update { state ->
             state.copy(
                 selectedConfidenceLevel = confidenceLevel,
-                validationMessage = null
+                validationError = null
             )
         }
     }
@@ -102,10 +102,10 @@ class ScenarioActivityViewModel(
     fun continueToNextStep() {
         val state = _uiState.value
 
-        val validationMessage = when (state.currentStep) {
+        val validationError = when (state.currentStep) {
             ScenarioStep.RISK_ASSESSMENT -> {
                 if (state.selectedRiskLevel == null) {
-                    "Select a risk level to continue."
+                    ScenarioValidationError.RISK_LEVEL_REQUIRED
                 } else {
                     null
                 }
@@ -116,7 +116,7 @@ class ScenarioActivityViewModel(
                     state.selectedWarningSignIds.isEmpty() &&
                     !state.hasSelectedNoWarningSigns
                 ) {
-                    "Select at least one warning sign or choose no clear warning signs."
+                    ScenarioValidationError.WARNING_SIGN_REQUIRED
                 } else {
                     null
                 }
@@ -124,7 +124,7 @@ class ScenarioActivityViewModel(
 
             ScenarioStep.SAFE_ACTION -> {
                 if (state.selectedActionId == null) {
-                    "Select an action to continue."
+                    ScenarioValidationError.ACTION_REQUIRED
                 } else {
                     null
                 }
@@ -133,10 +133,10 @@ class ScenarioActivityViewModel(
             ScenarioStep.CONFIDENCE -> null
         }
 
-        if (validationMessage != null) {
+        if (validationError != null) {
             _uiState.update { currentState ->
                 currentState.copy(
-                    validationMessage = validationMessage
+                    validationError = validationError
                 )
             }
 
@@ -160,7 +160,7 @@ class ScenarioActivityViewModel(
         _uiState.update { currentState ->
             currentState.copy(
                 currentStep = nextStep,
-                validationMessage = null
+                validationError = null
             )
         }
     }
@@ -188,7 +188,7 @@ class ScenarioActivityViewModel(
         _uiState.update { currentState ->
             currentState.copy(
                 currentStep = previousStep,
-                validationMessage = null
+                validationError = null
             )
         }
 
@@ -208,8 +208,8 @@ class ScenarioActivityViewModel(
         if (selectedConfidence == null) {
             _uiState.update { currentState ->
                 currentState.copy(
-                    validationMessage =
-                        "Select your confidence level before submitting."
+                    validationError =
+                        ScenarioValidationError.CONFIDENCE_REQUIRED
                 )
             }
 
@@ -241,10 +241,10 @@ class ScenarioActivityViewModel(
         _uiState.update { currentState ->
             currentState.copy(
                 evaluation = evaluation,
-                validationMessage = null,
+                validationError = null,
                 isSavingAttempt = true,
                 isAttemptSaved = false,
-                saveErrorMessage = null
+                saveStatus = null
             )
         }
 
@@ -274,14 +274,14 @@ class ScenarioActivityViewModel(
                 updateSaveState(
                     evaluation = evaluation,
                     isSaved = true,
-                    errorMessage = null
+                    saveStatus = null
                 )
             }.onFailure {
                 updateSaveState(
                     evaluation = evaluation,
                     isSaved = false,
-                    errorMessage =
-                        "Your result is available, but this attempt could not be saved."
+                    saveStatus =
+                        ScenarioSaveStatus.SAVE_FAILED
                 )
             }
         }
@@ -290,7 +290,7 @@ class ScenarioActivityViewModel(
     private fun updateSaveState(
         evaluation: AttemptEvaluation,
         isSaved: Boolean,
-        errorMessage: String?
+        saveStatus: ScenarioSaveStatus?
     ) {
         _uiState.update { currentState ->
             if (currentState.evaluation != evaluation) {
@@ -299,7 +299,7 @@ class ScenarioActivityViewModel(
                 currentState.copy(
                     isSavingAttempt = false,
                     isAttemptSaved = isSaved,
-                    saveErrorMessage = errorMessage
+                    saveStatus = saveStatus
                 )
             }
         }

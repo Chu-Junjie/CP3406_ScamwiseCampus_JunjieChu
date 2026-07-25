@@ -13,7 +13,7 @@ data class HomeUiState(
     val recommendedCategory: ScamCategory? = null,
     val recommendedScenario: Scenario? = null,
     val isLoading: Boolean = true,
-    val errorMessage: String? = null
+    val error: HomeStatusMessage? = null
 ) {
     val completionPercent: Int
         get() {
@@ -22,10 +22,14 @@ data class HomeUiState(
             }
 
             return (
-                completedScenarioCount.toDouble() /
-                    totalScenarioCount *
-                    100
-                ).toInt()
+                    completedScenarioCount.toDouble() /
+                            totalScenarioCount *
+                            100
+                    ).toInt()
                 .coerceIn(0, 100)
         }
+}
+
+enum class HomeStatusMessage {
+    LOAD_FAILED
 }

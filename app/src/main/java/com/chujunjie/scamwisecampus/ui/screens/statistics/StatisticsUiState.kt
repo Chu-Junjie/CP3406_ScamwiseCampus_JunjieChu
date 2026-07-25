@@ -18,8 +18,12 @@ data class StatisticsUiState(
     val recommendedCategory: ScamCategory? = null,
     val recentAttempts: List<AttemptRecord> = emptyList(),
     val isLoading: Boolean = true,
-    val errorMessage: String? = null
+    val error: StatisticsStatusMessage? = null
 ) {
     val hasAttempts: Boolean
         get() = totalAttempts > 0
+}
+
+enum class StatisticsStatusMessage {
+    LOAD_FAILED
 }

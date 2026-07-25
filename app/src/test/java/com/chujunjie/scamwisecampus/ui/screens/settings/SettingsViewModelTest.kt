@@ -85,8 +85,8 @@ class SettingsViewModelTest {
         )
 
         assertEquals(
-            "Practice history cleared.",
-            viewModel.uiState.value.feedbackMessage
+            SettingsFeedback.HISTORY_CLEARED,
+            viewModel.uiState.value.feedback
         )
     }
 
@@ -111,8 +111,8 @@ class SettingsViewModelTest {
         )
 
         assertEquals(
-            "Practice history could not be cleared.",
-            viewModel.uiState.value.feedbackMessage
+            SettingsFeedback.HISTORY_CLEAR_FAILED,
+            viewModel.uiState.value.feedback
         )
     }
 
@@ -128,7 +128,7 @@ class SettingsViewModelTest {
             get() = themeMode.value
 
         override fun observeThemeMode():
-            Flow<ThemeMode> {
+                Flow<ThemeMode> {
             return themeMode
         }
 
@@ -147,7 +147,7 @@ class SettingsViewModelTest {
             private set
 
         override fun observeAttempts():
-            Flow<List<AttemptRecord>> {
+                Flow<List<AttemptRecord>> {
             return MutableStateFlow(emptyList())
         }
 

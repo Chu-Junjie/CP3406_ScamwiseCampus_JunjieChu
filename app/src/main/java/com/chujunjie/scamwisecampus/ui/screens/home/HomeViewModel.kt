@@ -45,8 +45,8 @@ class HomeViewModel(
                 .catch {
                     _uiState.value = HomeUiState(
                         isLoading = false,
-                        errorMessage =
-                            "Home information could not be loaded."
+                        error =
+                            HomeStatusMessage.LOAD_FAILED
                     )
                 }
                 .collect { state ->
@@ -108,10 +108,10 @@ class HomeViewModel(
             .groupBy { attempt -> attempt.category }
             .minWithOrNull(
                 compareBy<Map.Entry<ScamCategory, List<AttemptRecord>>> {
-                    entry ->
-                        entry.value
-                            .map { attempt -> attempt.totalScore }
-                            .average()
+                        entry ->
+                    entry.value
+                        .map { attempt -> attempt.totalScore }
+                        .average()
                 }.thenBy { entry ->
                     entry.value.size
                 }

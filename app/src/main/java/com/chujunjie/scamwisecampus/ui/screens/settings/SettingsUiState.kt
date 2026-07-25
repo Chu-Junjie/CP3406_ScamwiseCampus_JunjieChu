@@ -6,5 +6,12 @@ data class SettingsUiState(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val isLoading: Boolean = true,
     val isClearingHistory: Boolean = false,
-    val feedbackMessage: String? = null
+    val feedback: SettingsFeedback? = null
 )
+
+enum class SettingsFeedback {
+    THEME_SAVE_FAILED,
+    HISTORY_CLEARED,
+    HISTORY_CLEAR_FAILED
+}
+
