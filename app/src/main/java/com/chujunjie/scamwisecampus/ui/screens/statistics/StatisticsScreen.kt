@@ -1,15 +1,18 @@
 package com.chujunjie.scamwisecampus.ui.screens.statistics
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -22,17 +25,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.chujunjie.scamwisecampus.R
 import com.chujunjie.scamwisecampus.domain.model.AttemptRecord
 import com.chujunjie.scamwisecampus.domain.model.ConfidenceCalibration
 import com.chujunjie.scamwisecampus.domain.model.Difficulty
 import com.chujunjie.scamwisecampus.domain.model.ScamCategory
 import com.chujunjie.scamwisecampus.ui.components.ResponsiveContent
+
+private val WideStatisticsBreakpoint = 600.dp
+private val StatisticsColumnSpacing = 16.dp
 
 @Composable
 fun StatisticsScreen(
@@ -84,8 +92,7 @@ private fun StatisticsDashboard(
     BoxWithConstraints(
         modifier = modifier.fillMaxSize()
     ) {
-        val useTwoColumns = maxWidth >= 600.dp
-        val recommendedCategory = uiState.recommendedCategory
+        val useTwoColumns = maxWidth >= WideStatisticsBreakpoint
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -99,7 +106,9 @@ private fun StatisticsDashboard(
         ) {
             item {
                 Text(
-                    text = "Statistics",
+                    text = stringResource(
+                        R.string.statistics_title
+                    ),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.semantics {
                         heading()
@@ -107,116 +116,79 @@ private fun StatisticsDashboard(
                 )
 
                 Text(
-                    text = "Review your practice history and identify where to improve.",
+                    text = stringResource(
+                        R.string.statistics_description
+                    ),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color =
+                        MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
 
-            if (useTwoColumns) {
+            item {
+                SummaryCard(
+                    totalAttempts = uiState.totalAttempts,
+                    averageScore = uiState.averageScore,
+                    highestScore = uiState.highestScore
+                )
+            }
+
+            uiState.recommendedCategory?.let { category ->
                 item {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement =
-                            Arrangement.spacedBy(16.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            SummaryCard(
-                                totalAttempts = uiState.totalAttempts,
-                                averageScore = uiState.averageScore,
-                                highestScore = uiState.highestScore
-                            )
-                        }
-
-                        Column(
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            AccuracyCard(
-                                riskAccuracyPercent =
-                                    uiState.riskAccuracyPercent,
-                                safeActionAccuracyPercent =
-                                    uiState.safeActionAccuracyPercent
-                            )
-                        }
-                    }
-                }
-
-                if (recommendedCategory != null) {
-                    item {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement =
-                                Arrangement.spacedBy(16.dp)
-                        ) {
-                            Column(
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                RecommendationCard(
-                                    category = recommendedCategory,
-                                    onPracticeClick = onPracticeClick
-                                )
-                            }
-
-                            Column(
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                CalibrationCard(
-                                    uiState = uiState
-                                )
-                            }
-                        }
-                    }
-                } else {
-                    item {
-                        CalibrationCard(
-                            uiState = uiState
-                        )
-                    }
-                }
-            } else {
-                item {
-                    SummaryCard(
-                        totalAttempts = uiState.totalAttempts,
-                        averageScore = uiState.averageScore,
-                        highestScore = uiState.highestScore
-                    )
-                }
-
-                recommendedCategory?.let { category ->
-                    item {
-                        RecommendationCard(
-                            category = category,
-                            onPracticeClick = onPracticeClick
-                        )
-                    }
-                }
-
-                item {
-                    AccuracyCard(
-                        riskAccuracyPercent =
-                            uiState.riskAccuracyPercent,
-                        safeActionAccuracyPercent =
-                            uiState.safeActionAccuracyPercent
-                    )
-                }
-
-                item {
-                    CalibrationCard(
-                        uiState = uiState
+                    RecommendationCard(
+                        category = category,
+                        onPracticeClick = onPracticeClick
                     )
                 }
             }
 
             item {
-                Text(
-                    text = "Performance by Category",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.semantics {
-                        heading()
+                if (useTwoColumns) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        AccuracyCard(
+                            riskAccuracyPercent =
+                                uiState.riskAccuracyPercent,
+                            safeActionAccuracyPercent =
+                                uiState.safeActionAccuracyPercent,
+                            modifier = Modifier.weight(1f)
+                        )
+
+                        Spacer(
+                            modifier = Modifier.width(
+                                StatisticsColumnSpacing
+                            )
+                        )
+
+                        CalibrationCard(
+                            uiState = uiState,
+                            modifier = Modifier.weight(1f)
+                        )
                     }
+                } else {
+                    Column(
+                        verticalArrangement =
+                            Arrangement.spacedBy(16.dp)
+                    ) {
+                        AccuracyCard(
+                            riskAccuracyPercent =
+                                uiState.riskAccuracyPercent,
+                            safeActionAccuracyPercent =
+                                uiState.safeActionAccuracyPercent
+                        )
+
+                        CalibrationCard(uiState = uiState)
+                    }
+                }
+            }
+
+            item {
+                SectionHeading(
+                    text = stringResource(
+                        R.string.statistics_performance_by_category
+                    )
                 )
             }
 
@@ -224,30 +196,17 @@ private fun StatisticsDashboard(
                 items(
                     items = uiState.categoryPerformance.chunked(2),
                     key = { row ->
-                        row.joinToString(
-                            separator = "-"
-                        ) { performance ->
+                        row.joinToString(separator = "-") { performance ->
                             performance.category.name
                         }
                     }
                 ) { row ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement =
-                            Arrangement.spacedBy(16.dp)
+                    TwoColumnRow(
+                        itemCount = row.size
                     ) {
                         row.forEach { performance ->
-                            Column(
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                CategoryPerformanceCard(
-                                    performance = performance
-                                )
-                            }
-                        }
-
-                        if (row.size == 1) {
-                            Spacer(
+                            CategoryPerformanceCard(
+                                performance = performance,
                                 modifier = Modifier.weight(1f)
                             )
                         }
@@ -267,14 +226,11 @@ private fun StatisticsDashboard(
             }
 
             item {
-                Text(
-                    text = "Recent Attempts",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier
-                        .padding(top = 4.dp)
-                        .semantics {
-                            heading()
-                        }
+                SectionHeading(
+                    text = stringResource(
+                        R.string.statistics_recent_attempts
+                    ),
+                    modifier = Modifier.padding(top = 4.dp)
                 )
             }
 
@@ -282,30 +238,17 @@ private fun StatisticsDashboard(
                 items(
                     items = uiState.recentAttempts.chunked(2),
                     key = { row ->
-                        row.joinToString(
-                            separator = "-"
-                        ) { attempt ->
+                        row.joinToString(separator = "-") { attempt ->
                             attempt.attemptId.toString()
                         }
                     }
                 ) { row ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement =
-                            Arrangement.spacedBy(16.dp)
+                    TwoColumnRow(
+                        itemCount = row.size
                     ) {
                         row.forEach { attempt ->
-                            Column(
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                RecentAttemptCard(
-                                    attempt = attempt
-                                )
-                            }
-                        }
-
-                        if (row.size == 1) {
-                            Spacer(
+                            RecentAttemptCard(
+                                attempt = attempt,
                                 modifier = Modifier.weight(1f)
                             )
                         }
@@ -314,17 +257,48 @@ private fun StatisticsDashboard(
             } else {
                 items(
                     items = uiState.recentAttempts,
-                    key = { attempt ->
-                        attempt.attemptId
-                    }
+                    key = { attempt -> attempt.attemptId }
                 ) { attempt ->
-                    RecentAttemptCard(
-                        attempt = attempt
-                    )
+                    RecentAttemptCard(attempt = attempt)
                 }
             }
         }
     }
+}
+
+@Composable
+private fun TwoColumnRow(
+    itemCount: Int,
+    content: @Composable RowScope.() -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(
+            StatisticsColumnSpacing
+        )
+    ) {
+        content()
+
+        if (itemCount == 1) {
+            Spacer(
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun SectionHeading(
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.titleLarge,
+        modifier = modifier.semantics {
+            heading()
+        }
+    )
 }
 
 @Composable
@@ -333,9 +307,15 @@ private fun SummaryCard(
     averageScore: Int,
     highestScore: Int
 ) {
-    StatisticsCard(title = "Overall Progress") {
+    StatisticsCard(
+        title = stringResource(
+            R.string.statistics_overall_progress
+        )
+    ) {
         SummaryValueRow(
-            label = "Completed attempts",
+            label = stringResource(
+                R.string.statistics_completed_attempts
+            ),
             value = totalAttempts.toString()
         )
 
@@ -344,8 +324,13 @@ private fun SummaryCard(
         )
 
         SummaryValueRow(
-            label = "Average score",
-            value = "$averageScore / 100"
+            label = stringResource(
+                R.string.statistics_average_score
+            ),
+            value = stringResource(
+                R.string.score_out_of_100,
+                averageScore
+            )
         )
 
         HorizontalDivider(
@@ -353,8 +338,13 @@ private fun SummaryCard(
         )
 
         SummaryValueRow(
-            label = "Highest score",
-            value = "$highestScore / 100"
+            label = stringResource(
+                R.string.statistics_highest_score
+            ),
+            value = stringResource(
+                R.string.score_out_of_100,
+                highestScore
+            )
         )
     }
 }
@@ -371,19 +361,26 @@ private fun RecommendationCard(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "Recommended Practice",
+                text = stringResource(
+                    R.string.statistics_recommended_practice
+                ),
                 style = MaterialTheme.typography.titleMedium
             )
 
             Text(
-                text = category.displayName(),
+                text = stringResource(
+                    category.displayNameRes()
+                ),
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(top = 8.dp)
             )
 
             Text(
-                text = "This is currently your lowest-scoring practised category.",
+                text = stringResource(
+                    R.string
+                        .statistics_recommendation_description
+                ),
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(top = 8.dp)
             )
@@ -394,7 +391,11 @@ private fun RecommendationCard(
                     .fillMaxWidth()
                     .padding(top = 16.dp)
             ) {
-                Text(text = "Practice Now")
+                Text(
+                    text = stringResource(
+                        R.string.statistics_practice_now
+                    )
+                )
             }
         }
     }
@@ -403,16 +404,26 @@ private fun RecommendationCard(
 @Composable
 private fun AccuracyCard(
     riskAccuracyPercent: Int,
-    safeActionAccuracyPercent: Int
+    safeActionAccuracyPercent: Int,
+    modifier: Modifier = Modifier
 ) {
-    StatisticsCard(title = "Decision Accuracy") {
+    StatisticsCard(
+        title = stringResource(
+            R.string.statistics_decision_accuracy
+        ),
+        modifier = modifier
+    ) {
         ProgressMetric(
-            label = "Risk assessment accuracy",
+            label = stringResource(
+                R.string.statistics_risk_assessment_accuracy
+            ),
             percent = riskAccuracyPercent
         )
 
         ProgressMetric(
-            label = "Safe action accuracy",
+            label = stringResource(
+                R.string.statistics_safe_action_accuracy
+            ),
             percent = safeActionAccuracyPercent,
             modifier = Modifier.padding(top = 16.dp)
         )
@@ -421,37 +432,53 @@ private fun AccuracyCard(
 
 @Composable
 private fun CalibrationCard(
-    uiState: StatisticsUiState
+    uiState: StatisticsUiState,
+    modifier: Modifier = Modifier
 ) {
-    StatisticsCard(title = "Confidence Calibration") {
+    StatisticsCard(
+        title = stringResource(
+            R.string.statistics_confidence_calibration
+        ),
+        modifier = modifier
+    ) {
         CalibrationRow(
-            label = ConfidenceCalibration.WELL_CALIBRATED
-                .displayName(),
+            label = stringResource(
+                ConfidenceCalibration.WELL_CALIBRATED
+                    .displayNameRes()
+            ),
             count = uiState.wellCalibratedCount
         )
 
         CalibrationRow(
-            label = ConfidenceCalibration.UNDERCONFIDENT
-                .displayName(),
+            label = stringResource(
+                ConfidenceCalibration.UNDERCONFIDENT
+                    .displayNameRes()
+            ),
             count = uiState.underconfidentCount
         )
 
         CalibrationRow(
-            label = ConfidenceCalibration.OVERCONFIDENT
-                .displayName(),
+            label = stringResource(
+                ConfidenceCalibration.OVERCONFIDENT
+                    .displayNameRes()
+            ),
             count = uiState.overconfidentCount
         )
 
         CalibrationRow(
-            label = ConfidenceCalibration.NEEDS_REVIEW
-                .displayName(),
+            label = stringResource(
+                ConfidenceCalibration.NEEDS_REVIEW
+                    .displayNameRes()
+            ),
             count = uiState.needsReviewCount
         )
 
         CalibrationRow(
-            label = ConfidenceCalibration
-                .CAUTIOUS_BUT_INCORRECT
-                .displayName(),
+            label = stringResource(
+                ConfidenceCalibration
+                    .CAUTIOUS_BUT_INCORRECT
+                    .displayNameRes()
+            ),
             count = uiState.cautiousButIncorrectCount
         )
     }
@@ -459,36 +486,56 @@ private fun CalibrationCard(
 
 @Composable
 private fun CategoryPerformanceCard(
-    performance: CategoryPerformance
+    performance: CategoryPerformance,
+    modifier: Modifier = Modifier
 ) {
     StatisticsCard(
-        title = performance.category.displayName()
+        title = stringResource(
+            performance.category.displayNameRes()
+        ),
+        modifier = modifier
     ) {
         SummaryValueRow(
-            label = "Attempts",
+            label = stringResource(
+                R.string.statistics_attempts
+            ),
             value = performance.attemptCount.toString()
         )
 
         SummaryValueRow(
-            label = "Average score",
-            value = "${performance.averageScore} / 100",
+            label = stringResource(
+                R.string.statistics_average_score
+            ),
+            value = stringResource(
+                R.string.score_out_of_100,
+                performance.averageScore
+            ),
             modifier = Modifier.padding(top = 10.dp)
         )
 
         SummaryValueRow(
-            label = "Highest score",
-            value = "${performance.highestScore} / 100",
+            label = stringResource(
+                R.string.statistics_highest_score
+            ),
+            value = stringResource(
+                R.string.score_out_of_100,
+                performance.highestScore
+            ),
             modifier = Modifier.padding(top = 10.dp)
         )
 
         ProgressMetric(
-            label = "Risk accuracy",
+            label = stringResource(
+                R.string.statistics_risk_accuracy
+            ),
             percent = performance.riskAccuracyPercent,
             modifier = Modifier.padding(top = 16.dp)
         )
 
         ProgressMetric(
-            label = "Safe action accuracy",
+            label = stringResource(
+                R.string.statistics_safe_action_accuracy_short
+            ),
             percent =
                 performance.safeActionAccuracyPercent,
             modifier = Modifier.padding(top = 16.dp)
@@ -498,10 +545,11 @@ private fun CategoryPerformanceCard(
 
 @Composable
 private fun RecentAttemptCard(
-    attempt: AttemptRecord
+    attempt: AttemptRecord,
+    modifier: Modifier = Modifier
 ) {
     ElevatedCard(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -512,26 +560,36 @@ private fun RecentAttemptCard(
                     Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = attempt.category.displayName(),
+                    text = stringResource(
+                        attempt.category.displayNameRes()
+                    ),
                     style = MaterialTheme.typography.titleMedium
                 )
 
                 Text(
-                    text = "${attempt.totalScore} / 100",
+                    text = stringResource(
+                        R.string.score_out_of_100,
+                        attempt.totalScore
+                    ),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
             }
 
             Text(
-                text = attempt.difficulty.displayName(),
+                text = stringResource(
+                    attempt.difficulty.displayNameRes()
+                ),
                 style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color =
+                    MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 4.dp)
             )
 
             Text(
-                text = attempt.confidenceCalibration.displayName(),
+                text = stringResource(
+                    attempt.confidenceCalibration.displayNameRes()
+                ),
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(top = 10.dp)
             )
@@ -542,10 +600,11 @@ private fun RecentAttemptCard(
 @Composable
 private fun StatisticsCard(
     title: String,
+    modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit
 ) {
     ElevatedCard(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -582,14 +641,13 @@ private fun SummaryValueRow(
     ) {
         Text(
             text = label,
-            style =
-                MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.weight(1f)
         )
 
         Text(
             text = value,
-            style =
-                MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium
         )
     }
 }
@@ -616,14 +674,16 @@ private fun ProgressMetric(
         ) {
             Text(
                 text = label,
-                style =
-                    MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.weight(1f)
             )
 
             Text(
-                text = "$percent%",
-                style =
-                    MaterialTheme.typography.labelLarge
+                text = stringResource(
+                    R.string.percentage_format,
+                    percent
+                ),
+                style = MaterialTheme.typography.labelLarge
             )
         }
 
@@ -664,21 +724,18 @@ private fun LoadingStatisticsContent(
         modifier = modifier
             .fillMaxSize()
             .semantics {
-                liveRegion =
-                    LiveRegionMode.Polite
+                liveRegion = LiveRegionMode.Polite
             },
-        verticalArrangement =
-            Arrangement.Center,
-        horizontalAlignment =
-            Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CircularProgressIndicator()
 
         Text(
-            text = "Loading statistics...",
-            modifier = Modifier.padding(
-                top = 16.dp
-            )
+            text = stringResource(
+                R.string.statistics_loading
+            ),
+            modifier = Modifier.padding(top = 16.dp)
         )
     }
 }
@@ -693,41 +750,39 @@ private fun EmptyStatisticsContent(
             .fillMaxSize()
             .padding(24.dp)
             .semantics {
-                liveRegion =
-                    LiveRegionMode.Polite
+                liveRegion = LiveRegionMode.Polite
             },
-        verticalArrangement =
-            Arrangement.Center,
-        horizontalAlignment =
-            Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "No practice history yet",
-            style =
-                MaterialTheme.typography.headlineSmall,
+            text = stringResource(
+                R.string.statistics_no_history_title
+            ),
+            style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.semantics {
                 heading()
             }
         )
 
         Text(
-            text = "Complete a scenario to begin tracking your progress.",
-            style =
-                MaterialTheme.typography.bodyLarge,
-            color =
-                MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(
-                top = 8.dp
-            )
+            text = stringResource(
+                R.string.statistics_no_history_description
+            ),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 8.dp)
         )
 
         Button(
             onClick = onPracticeClick,
-            modifier = Modifier.padding(
-                top = 20.dp
-            )
+            modifier = Modifier.padding(top = 20.dp)
         ) {
-            Text(text = "Start Practice")
+            Text(
+                text = stringResource(
+                    R.string.statistics_start_practice
+                )
+            )
         }
     }
 }
@@ -742,20 +797,17 @@ private fun StatisticsMessageContent(
             .fillMaxSize()
             .padding(24.dp)
             .semantics {
-                liveRegion =
-                    LiveRegionMode.Assertive
+                liveRegion = LiveRegionMode.Assertive
             },
-        verticalArrangement =
-            Arrangement.Center,
-        horizontalAlignment =
-            Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Statistics unavailable",
-            style =
-                MaterialTheme.typography.headlineSmall,
-            color =
-                MaterialTheme.colorScheme.error,
+            text = stringResource(
+                R.string.statistics_unavailable
+            ),
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.error,
             modifier = Modifier.semantics {
                 heading()
             }
@@ -763,51 +815,55 @@ private fun StatisticsMessageContent(
 
         Text(
             text = message,
-            style =
-                MaterialTheme.typography.bodyLarge,
-            color =
-                MaterialTheme.colorScheme.error,
-            modifier = Modifier.padding(
-                top = 8.dp
-            )
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier.padding(top = 8.dp)
         )
     }
 }
 
-private fun ScamCategory.displayName(): String {
+@StringRes
+private fun ScamCategory.displayNameRes(): Int {
     return when (this) {
-        ScamCategory.JOB -> "Job"
-        ScamCategory.BANKING -> "Banking"
-        ScamCategory.PARCEL -> "Parcel"
-        ScamCategory.MARKETPLACE -> "Marketplace"
-        ScamCategory.IMPERSONATION -> "Impersonation"
-        ScamCategory.PHISHING -> "Phishing"
+        ScamCategory.JOB -> R.string.category_job
+        ScamCategory.BANKING -> R.string.category_banking
+        ScamCategory.PARCEL -> R.string.category_parcel
+        ScamCategory.MARKETPLACE ->
+            R.string.category_marketplace
+
+        ScamCategory.IMPERSONATION ->
+            R.string.category_impersonation
+
+        ScamCategory.PHISHING ->
+            R.string.category_phishing
     }
 }
 
-private fun Difficulty.displayName(): String {
+@StringRes
+private fun Difficulty.displayNameRes(): Int {
     return when (this) {
-        Difficulty.EASY -> "Easy"
-        Difficulty.MEDIUM -> "Medium"
-        Difficulty.HARD -> "Hard"
+        Difficulty.EASY -> R.string.difficulty_easy
+        Difficulty.MEDIUM -> R.string.difficulty_medium
+        Difficulty.HARD -> R.string.difficulty_hard
     }
 }
 
-private fun ConfidenceCalibration.displayName(): String {
+@StringRes
+private fun ConfidenceCalibration.displayNameRes(): Int {
     return when (this) {
         ConfidenceCalibration.WELL_CALIBRATED ->
-            "Well Calibrated"
+            R.string.calibration_well_calibrated
 
         ConfidenceCalibration.UNDERCONFIDENT ->
-            "Underconfident"
+            R.string.calibration_underconfident
 
         ConfidenceCalibration.OVERCONFIDENT ->
-            "Overconfident"
+            R.string.calibration_overconfident
 
         ConfidenceCalibration.NEEDS_REVIEW ->
-            "Needs Review"
+            R.string.calibration_needs_review
 
         ConfidenceCalibration.CAUTIOUS_BUT_INCORRECT ->
-            "Cautious but Incorrect"
+            R.string.calibration_cautious_but_incorrect
     }
 }

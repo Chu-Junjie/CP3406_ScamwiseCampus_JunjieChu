@@ -133,4 +133,35 @@
     <string name="calibration_description_overconfident">Your confidence was high, but important parts of the answer need review.</string>
     <string name="calibration_description_needs_review">Review the warning signs and safer response before trying another scenario.</string>
     <string name="calibration_description_cautious_but_incorrect">You recognised uncertainty, but the answer still needs further review.</string>
+
+    <string name="statistics_title">Statistics</string>
+    <string name="statistics_description">Review your practice history and identify where to improve.</string>
+
+    <string name="statistics_overall_progress">Overall Progress</string>
+    <string name="statistics_completed_attempts">Completed attempts</string>
+    <string name="statistics_average_score">Average score</string>
+    <string name="statistics_highest_score">Highest score</string>
+
+    <string name="statistics_recommended_practice">Recommended Practice</string>
+    <string name="statistics_recommendation_description">This is currently your lowest-scoring practised category.</string>
+    <string name="statistics_practice_now">Practice Now</string>
+
+    <string name="statistics_decision_accuracy">Decision Accuracy</string>
+    <string name="statistics_risk_assessment_accuracy">Risk assessment accuracy</string>
+    <string name="statistics_safe_action_accuracy">Safe action accuracy</string>
+    <string name="statistics_confidence_calibration">Confidence Calibration</string>
+
+    <string name="statistics_performance_by_category">Performance by Category</string>
+    <string name="statistics_recent_attempts">Recent Attempts</string>
+    <string name="statistics_attempts">Attempts</string>
+    <string name="statistics_risk_accuracy">Risk accuracy</string>
+    <string name="statistics_safe_action_accuracy_short">Safe action accuracy</string>
+
+    <string name="statistics_loading">Loading statistics...</string>
+    <string name="statistics_no_history_title">No practice history yet</string>
+    <string name="statistics_no_history_description">Complete a scenario to begin tracking your progress.</string>
+    <string name="statistics_start_practice">Start Practice</string>
+    <string name="statistics_unavailable">Statistics unavailable</string>
+
+    <string name="percentage_format">%1$d%%</string>
 </resources>
