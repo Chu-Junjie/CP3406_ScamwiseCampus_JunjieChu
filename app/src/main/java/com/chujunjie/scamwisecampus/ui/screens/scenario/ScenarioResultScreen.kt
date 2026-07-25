@@ -1,5 +1,6 @@
 package com.chujunjie.scamwisecampus.ui.screens.scenario
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -18,7 +19,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.chujunjie.scamwisecampus.R
 import com.chujunjie.scamwisecampus.domain.model.AttemptEvaluation
 import com.chujunjie.scamwisecampus.domain.model.ConfidenceCalibration
 import com.chujunjie.scamwisecampus.domain.model.ConfidenceLevel
@@ -87,8 +92,13 @@ fun ScenarioResultScreen(
     ) {
         item {
             Text(
-                text = "Practice Complete",
-                style = MaterialTheme.typography.headlineMedium
+                text = stringResource(
+                    R.string.result_practice_complete
+                ),
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.semantics {
+                    heading()
+                }
             )
 
             Text(
@@ -107,25 +117,39 @@ fun ScenarioResultScreen(
                     modifier = Modifier.padding(20.dp)
                 ) {
                     Text(
-                        text = "${evaluation.totalScore} / 100",
+                        text = stringResource(
+                            R.string.score_out_of_100,
+                            evaluation.totalScore
+                        ),
                         style = MaterialTheme.typography.displaySmall
                     )
 
                     Text(
-                        text = evaluation.confidenceCalibration.displayName(),
+                        text = stringResource(
+                            evaluation.confidenceCalibration
+                                .displayNameRes()
+                        ),
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(top = 8.dp)
                     )
 
                     Text(
-                        text = evaluation.confidenceCalibration.description(),
+                        text = stringResource(
+                            evaluation.confidenceCalibration
+                                .descriptionRes()
+                        ),
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(top = 8.dp)
                     )
 
                     Text(
-                        text = "Reported confidence: ${selectedConfidenceLevel.displayName()}",
+                        text = stringResource(
+                            R.string.result_reported_confidence_format,
+                            stringResource(
+                                selectedConfidenceLevel.displayNameRes()
+                            )
+                        ),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = 12.dp)
@@ -136,10 +160,14 @@ fun ScenarioResultScreen(
 
         item {
             ResultCard(
-                title = "Score Breakdown"
+                title = stringResource(
+                    R.string.result_score_breakdown
+                )
             ) {
                 ScoreRow(
-                    label = "Risk assessment",
+                    label = stringResource(
+                        R.string.result_risk_assessment_label
+                    ),
                     score = evaluation.riskScore,
                     maximumScore = 40
                 )
@@ -149,7 +177,9 @@ fun ScenarioResultScreen(
                 )
 
                 ScoreRow(
-                    label = "Warning signs",
+                    label = stringResource(
+                        R.string.result_warning_signs_label
+                    ),
                     score = evaluation.warningSignScore,
                     maximumScore = 30
                 )
@@ -159,7 +189,9 @@ fun ScenarioResultScreen(
                 )
 
                 ScoreRow(
-                    label = "Safe action",
+                    label = stringResource(
+                        R.string.result_safe_action_label
+                    ),
                     score = evaluation.safeActionScore,
                     maximumScore = 30
                 )
@@ -168,20 +200,32 @@ fun ScenarioResultScreen(
 
         item {
             ResultCard(
-                title = "Risk Assessment"
+                title = stringResource(
+                    R.string.result_risk_assessment
+                )
             ) {
                 FeedbackLabel(
                     isCorrect = evaluation.isRiskCorrect
                 )
 
                 Text(
-                    text = "Your answer: ${selectedRiskLevel.displayName()}",
+                    text = stringResource(
+                        R.string.result_your_answer_format,
+                        stringResource(
+                            selectedRiskLevel.displayNameRes()
+                        )
+                    ),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(top = 12.dp)
                 )
 
                 Text(
-                    text = "Correct answer: ${scenario.correctRiskLevel.displayName()}",
+                    text = stringResource(
+                        R.string.result_correct_answer_format,
+                        stringResource(
+                            scenario.correctRiskLevel.displayNameRes()
+                        )
+                    ),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(top = 6.dp)
                 )
@@ -190,7 +234,9 @@ fun ScenarioResultScreen(
 
         item {
             ResultCard(
-                title = "Warning Signs"
+                title = stringResource(
+                    R.string.result_warning_signs
+                )
             ) {
                 WarningSignFeedback(
                     actualWarningSigns = actualWarningSigns,
@@ -207,14 +253,18 @@ fun ScenarioResultScreen(
 
         item {
             ResultCard(
-                title = "Safest Action"
+                title = stringResource(
+                    R.string.result_safest_action
+                )
             ) {
                 FeedbackLabel(
                     isCorrect = evaluation.isSafeActionCorrect
                 )
 
                 Text(
-                    text = "Your answer:",
+                    text = stringResource(
+                        R.string.result_your_answer_label
+                    ),
                     style = MaterialTheme.typography.labelLarge,
                     modifier = Modifier.padding(top = 12.dp)
                 )
@@ -238,7 +288,9 @@ fun ScenarioResultScreen(
                     )
 
                     Text(
-                        text = "Recommended action:",
+                        text = stringResource(
+                            R.string.result_recommended_action
+                        ),
                         style = MaterialTheme.typography.labelLarge
                     )
 
@@ -260,7 +312,9 @@ fun ScenarioResultScreen(
 
         item {
             ResultCard(
-                title = "Why This Matters"
+                title = stringResource(
+                    R.string.result_why_this_matters
+                )
             ) {
                 Text(
                     text = scenario.explanation,
@@ -271,7 +325,9 @@ fun ScenarioResultScreen(
 
         item {
             ResultCard(
-                title = "Safe Verification Advice"
+                title = stringResource(
+                    R.string.result_safe_verification_advice
+                )
             ) {
                 Text(
                     text = scenario.verificationAdvice,
@@ -285,7 +341,11 @@ fun ScenarioResultScreen(
                 onClick = onRestart,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Try Again")
+                Text(
+                    text = stringResource(
+                        R.string.result_try_again
+                    )
+                )
             }
 
             OutlinedButton(
@@ -294,7 +354,11 @@ fun ScenarioResultScreen(
                     .fillMaxWidth()
                     .padding(top = 12.dp)
             ) {
-                Text(text = "View Statistics")
+                Text(
+                    text = stringResource(
+                        R.string.result_view_statistics
+                    )
+                )
             }
 
             TextButton(
@@ -303,7 +367,11 @@ fun ScenarioResultScreen(
                     .fillMaxWidth()
                     .padding(top = 4.dp)
             ) {
-                Text(text = "Return Home")
+                Text(
+                    text = stringResource(
+                        R.string.result_return_home
+                    )
+                )
             }
         }
     }
@@ -350,7 +418,11 @@ private fun ScoreRow(
         )
 
         Text(
-            text = "$score / $maximumScore",
+            text = stringResource(
+                R.string.fraction_format,
+                score,
+                maximumScore
+            ),
             style = MaterialTheme.typography.titleMedium
         )
     }
@@ -361,11 +433,13 @@ private fun FeedbackLabel(
     isCorrect: Boolean
 ) {
     Text(
-        text = if (isCorrect) {
-            "Correct"
-        } else {
-            "Needs Review"
-        },
+        text = stringResource(
+            if (isCorrect) {
+                R.string.result_correct
+            } else {
+                R.string.result_needs_review
+            }
+        ),
         style = MaterialTheme.typography.labelLarge,
         color = if (isCorrect) {
             MaterialTheme.colorScheme.primary
@@ -389,7 +463,9 @@ private fun WarningSignFeedback(
             FeedbackLabel(isCorrect = true)
 
             Text(
-                text = "You correctly identified that the message contains no clear warning signs.",
+                text = stringResource(
+                    R.string.result_warning_none_correct
+                ),
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = 12.dp)
             )
@@ -399,13 +475,18 @@ private fun WarningSignFeedback(
             FeedbackLabel(isCorrect = false)
 
             Text(
-                text = "This scenario contains no clear warning signs.",
+                text = stringResource(
+                    R.string.result_warning_none
+                ),
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.padding(top = 12.dp)
             )
 
             FeedbackList(
-                heading = "Indicators incorrectly selected:",
+                heading = stringResource(
+                    R.string
+                        .result_indicators_incorrectly_selected
+                ),
                 warningSigns = incorrectlySelectedWarningSigns
             )
         }
@@ -413,21 +494,27 @@ private fun WarningSignFeedback(
         else -> {
             if (correctlySelectedWarningSigns.isNotEmpty()) {
                 FeedbackList(
-                    heading = "Correctly identified:",
+                    heading = stringResource(
+                        R.string.result_correctly_identified
+                    ),
                     warningSigns = correctlySelectedWarningSigns
                 )
             }
 
             if (missedWarningSigns.isNotEmpty()) {
                 FeedbackList(
-                    heading = "Missed warning signs:",
+                    heading = stringResource(
+                        R.string.result_missed_warning_signs
+                    ),
                     warningSigns = missedWarningSigns
                 )
             }
 
             if (incorrectlySelectedWarningSigns.isNotEmpty()) {
                 FeedbackList(
-                    heading = "Incorrectly selected:",
+                    heading = stringResource(
+                        R.string.result_incorrectly_selected
+                    ),
                     warningSigns = incorrectlySelectedWarningSigns
                 )
             }
@@ -438,7 +525,10 @@ private fun WarningSignFeedback(
                 incorrectlySelectedWarningSigns.isEmpty()
             ) {
                 Text(
-                    text = "You identified all warning signs correctly.",
+                    text = stringResource(
+                        R.string
+                            .result_all_warning_signs_correct
+                    ),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(top = 8.dp)
@@ -465,7 +555,10 @@ private fun FeedbackList(
 
     warningSigns.forEach { warningSign ->
         Text(
-            text = "• ${warningSign.description}",
+            text = stringResource(
+                R.string.result_bullet_format,
+                warningSign.description
+            ),
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(
                 start = 8.dp,
@@ -475,66 +568,71 @@ private fun FeedbackList(
     }
 }
 
-private fun RiskLevel.displayName(): String {
+@StringRes
+private fun RiskLevel.displayNameRes(): Int {
     return when (this) {
         RiskLevel.HIGH_RISK ->
-            "High Risk"
+            R.string.risk_level_high
 
         RiskLevel.NEEDS_VERIFICATION ->
-            "Needs Verification"
+            R.string.risk_level_needs_verification
 
         RiskLevel.NO_CLEAR_THREAT ->
-            "No Clear Threat Identified"
+            R.string.risk_level_no_clear_threat
     }
 }
 
-private fun ConfidenceLevel.displayName(): String {
+@StringRes
+private fun ConfidenceLevel.displayNameRes(): Int {
     return when (this) {
         ConfidenceLevel.NOT_CONFIDENT ->
-            "Not Confident"
+            R.string.confidence_not_confident
 
         ConfidenceLevel.SOMEWHAT_CONFIDENT ->
-            "Somewhat Confident"
+            R.string.confidence_somewhat_confident
 
         ConfidenceLevel.VERY_CONFIDENT ->
-            "Very Confident"
+            R.string.confidence_very_confident
     }
 }
 
-private fun ConfidenceCalibration.displayName(): String {
+@StringRes
+private fun ConfidenceCalibration.displayNameRes(): Int {
     return when (this) {
         ConfidenceCalibration.WELL_CALIBRATED ->
-            "Well Calibrated"
+            R.string.calibration_well_calibrated
 
         ConfidenceCalibration.UNDERCONFIDENT ->
-            "Underconfident"
+            R.string.calibration_underconfident
 
         ConfidenceCalibration.OVERCONFIDENT ->
-            "Overconfident"
+            R.string.calibration_overconfident
 
         ConfidenceCalibration.NEEDS_REVIEW ->
-            "Needs Review"
+            R.string.calibration_needs_review
 
         ConfidenceCalibration.CAUTIOUS_BUT_INCORRECT ->
-            "Cautious but Incorrect"
+            R.string.calibration_cautious_but_incorrect
     }
 }
 
-private fun ConfidenceCalibration.description(): String {
+@StringRes
+private fun ConfidenceCalibration.descriptionRes(): Int {
     return when (this) {
         ConfidenceCalibration.WELL_CALIBRATED ->
-            "Your confidence matched a strong answer."
+            R.string.calibration_description_well_calibrated
 
         ConfidenceCalibration.UNDERCONFIDENT ->
-            "Your answer was strong, but you may be underestimating your judgement."
+            R.string.calibration_description_underconfident
 
         ConfidenceCalibration.OVERCONFIDENT ->
-            "Your confidence was high, but important parts of the answer need review."
+            R.string.calibration_description_overconfident
 
         ConfidenceCalibration.NEEDS_REVIEW ->
-            "Review the warning signs and safer response before trying another scenario."
+            R.string.calibration_description_needs_review
 
         ConfidenceCalibration.CAUTIOUS_BUT_INCORRECT ->
-            "You recognised uncertainty, but the answer still needs further review."
+            R.string
+                .calibration_description_cautious_but_incorrect
     }
 }

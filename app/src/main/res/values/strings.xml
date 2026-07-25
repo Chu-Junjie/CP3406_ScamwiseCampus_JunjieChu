@@ -92,4 +92,45 @@
     <string name="confidence_not_confident">Not Confident</string>
     <string name="confidence_somewhat_confident">Somewhat Confident</string>
     <string name="confidence_very_confident">Very Confident</string>
+
+    <string name="result_practice_complete">Practice Complete</string>
+    <string name="result_reported_confidence_format">Reported confidence: %1$s</string>
+
+    <string name="result_score_breakdown">Score Breakdown</string>
+    <string name="result_risk_assessment">Risk Assessment</string>
+    <string name="result_warning_signs">Warning Signs</string>
+    <string name="result_safest_action">Safest Action</string>
+    <string name="result_why_this_matters">Why This Matters</string>
+    <string name="result_safe_verification_advice">Safe Verification Advice</string>
+
+    <string name="result_risk_assessment_label">Risk assessment</string>
+    <string name="result_warning_signs_label">Warning signs</string>
+    <string name="result_safe_action_label">Safe action</string>
+
+    <string name="result_your_answer_format">Your answer: %1$s</string>
+    <string name="result_correct_answer_format">Correct answer: %1$s</string>
+    <string name="result_your_answer_label">Your answer:</string>
+    <string name="result_recommended_action">Recommended action:</string>
+
+    <string name="result_try_again">Try Again</string>
+    <string name="result_view_statistics">View Statistics</string>
+    <string name="result_return_home">Return Home</string>
+
+    <string name="result_correct">Correct</string>
+    <string name="result_needs_review">Needs Review</string>
+
+    <string name="result_warning_none_correct">You correctly identified that the message contains no clear warning signs.</string>
+    <string name="result_warning_none">This scenario contains no clear warning signs.</string>
+    <string name="result_indicators_incorrectly_selected">Indicators incorrectly selected:</string>
+    <string name="result_correctly_identified">Correctly identified:</string>
+    <string name="result_missed_warning_signs">Missed warning signs:</string>
+    <string name="result_incorrectly_selected">Incorrectly selected:</string>
+    <string name="result_all_warning_signs_correct">You identified all warning signs correctly.</string>
+    <string name="result_bullet_format">• %1$s</string>
+
+    <string name="calibration_description_well_calibrated">Your confidence matched a strong answer.</string>
+    <string name="calibration_description_underconfident">Your answer was strong, but you may be underestimating your judgement.</string>
+    <string name="calibration_description_overconfident">Your confidence was high, but important parts of the answer need review.</string>
+    <string name="calibration_description_needs_review">Review the warning signs and safer response before trying another scenario.</string>
+    <string name="calibration_description_cautious_but_incorrect">You recognised uncertainty, but the answer still needs further review.</string>
 </resources>
