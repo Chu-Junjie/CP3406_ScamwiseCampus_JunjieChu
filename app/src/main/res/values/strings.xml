@@ -197,4 +197,45 @@
     <string name="common_cancel">Cancel</string>
 
     <string name="settings_loading">Loading settings...</string>
+
+    <string name="common_back">Back</string>
+
+    <string name="link_verification_title">Link Verification Lab</string>
+    <string name="link_verification_description">Check whether a web address matches a known Google Safe Browsing threat.</string>
+
+    <string name="link_before_check_title">Before You Check</string>
+    <string name="link_full_url_notice">The full URL, including its path and query, is sent to Google Safe Browsing only after you press Check URL.</string>
+    <string name="link_remove_personal_information">Remove personal tokens or identifying information from the URL when possible.</string>
+    <string name="link_limitations_notice">Safe Browsing may miss risky sites or occasionally flag a legitimate site. A result is guidance, not a guarantee.</string>
+
+    <string name="link_url_label">URL</string>
+    <string name="link_url_placeholder" translatable="false">https://example.com/path</string>
+    <string name="link_url_supporting_text">HTTP and HTTPS web addresses only.</string>
+    <string name="link_consent_text">I understand that this URL will be sent to Google Safe Browsing for this check.</string>
+
+    <string name="link_check_unavailable">Check Unavailable</string>
+    <string name="link_checking">Checking...</string>
+    <string name="link_check_url">Check URL</string>
+
+    <string name="link_learning_reminder_title">Learning Reminder</string>
+    <string name="link_learning_reminder">A link check is only one signal. Also verify the sender, domain spelling, request, urgency, and safest independent action.</string>
+
+    <string name="link_api_key_missing_title">API Key Not Configured</string>
+    <string name="link_api_key_missing_message">Add the Safe Browsing API key to local.properties and rebuild the app.</string>
+
+    <string name="link_no_known_threat_title">No Known Threat Match Found</string>
+    <string name="link_no_known_threat_message">Google Safe Browsing did not return a known threat match for this URL.</string>
+    <string name="link_no_safety_guarantee">This does not prove that the page is safe. Continue to verify the sender and purpose independently.</string>
+
+    <string name="link_potential_threat_title">Potential Threat Match Found</string>
+    <string name="link_potential_threat_message">This URL may be associated with one or more known threat categories.</string>
+    <string name="link_threat_safety_advice">Do not sign in, download files, or submit payment details. Verify the service through an official app or manually entered address.</string>
+    <string name="link_google_advisory">Advisory provided by Google</string>
+    <string name="link_check_another_url">Check Another URL</string>
+    <string name="link_threat_bullet_format">• %1$s</string>
+
+    <string name="link_threat_social_engineering">Social engineering or phishing</string>
+    <string name="link_threat_malware">Malware</string>
+    <string name="link_threat_unwanted_software">Unwanted software</string>
+    <string name="link_threat_harmful_application">Potentially harmful application</string>
 </resources>

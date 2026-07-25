@@ -1,6 +1,8 @@
 package com.chujunjie.scamwisecampus.ui.screens.linkverification
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,7 +10,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
@@ -22,17 +26,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.chujunjie.scamwisecampus.R
 import com.chujunjie.scamwisecampus.domain.model.LinkVerificationResult
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.Box
-import androidx.compose.ui.semantics.LiveRegionMode
-import androidx.compose.ui.semantics.liveRegion
+import com.chujunjie.scamwisecampus.ui.components.ResponsiveContent
 
 @Composable
 fun LinkVerificationScreen(
@@ -44,165 +48,177 @@ fun LinkVerificationScreen(
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(
-            start = 16.dp,
-            top = 12.dp,
-            end = 16.dp,
-            bottom = 32.dp
-        ),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ResponsiveContent(
+        modifier = modifier
     ) {
-        item {
-            TextButton(
-                onClick = onNavigateBack
-            ) {
-                Text(text = "Back")
-            }
-        }
-
-        item {
-            Text(
-                text = "Link Verification Lab",
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.semantics {
-                    heading()
-                }
-            )
-
-            Text(
-                text = "Check whether a web address matches a known Google Safe Browsing threat.",
-                style =
-                    MaterialTheme.typography.bodyMedium,
-                color =
-                    MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 6.dp)
-            )
-        }
-
-        item {
-            InformationCard(
-                title = "Before You Check"
-            ) {
-                Text(
-                    text = "The full URL, including its path and query, is sent to Google Safe Browsing only after you press Check URL.",
-                    style =
-                        MaterialTheme.typography.bodyMedium
-                )
-
-                Text(
-                    text = "Remove personal tokens or identifying information from the URL when possible.",
-                    style =
-                        MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(top = 10.dp)
-                )
-
-                Text(
-                    text = "Safe Browsing may miss risky sites or occasionally flag a legitimate site. A result is guidance, not a guarantee.",
-                    style =
-                        MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(top = 10.dp)
-                )
-            }
-        }
-
-        item {
-            OutlinedTextField(
-                value = uiState.urlInput,
-                onValueChange = onUrlInputChanged,
-                label = {
-                    Text(text = "URL")
-                },
-                placeholder = {
-                    Text(
-                        text = "https://example.com/path"
-                    )
-                },
-                supportingText = {
-                    Text(
-                        text = "HTTP and HTTPS web addresses only."
-                    )
-                },
-                singleLine = true,
-                enabled = !uiState.isLoading,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType =
-                        KeyboardType.Uri,
-                    imeAction =
-                        ImeAction.Done
-                ),
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-
-        item {
-            ElevatedCard(
-                onClick = {
-                    onConsentChanged(
-                        !uiState.hasConsent
-                    )
-                },
-                enabled = !uiState.isLoading,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .semantics(
-                        mergeDescendants = true
-                    ) {
-                        // Merge the checkbox state and consent text.
-                    }
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(12.dp),
-                    verticalAlignment =
-                        Alignment.CenterVertically
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                start = 16.dp,
+                top = 12.dp,
+                end = 16.dp,
+                bottom = 32.dp
+            ),
+            verticalArrangement =
+                Arrangement.spacedBy(16.dp)
+        ) {
+            item {
+                TextButton(
+                    onClick = onNavigateBack
                 ) {
-                    Checkbox(
-                        checked = uiState.hasConsent,
-                        onCheckedChange = null
-                    )
-
                     Text(
-                        text = "I understand that this URL will be sent to Google Safe Browsing for this check.",
-                        style =
-                            MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(
-                            start = 8.dp
+                        text = stringResource(
+                            R.string.common_back
                         )
                     )
                 }
             }
-        }
 
-        uiState.validationMessage?.let { message ->
             item {
                 Text(
-                    text = message,
-                    color =
-                        MaterialTheme.colorScheme.error,
+                    text = stringResource(
+                        R.string.link_verification_title
+                    ),
                     style =
-                        MaterialTheme.typography.bodyMedium,
+                        MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.semantics {
-                        liveRegion =
-                            LiveRegionMode.Assertive
+                        heading()
                     }
                 )
-            }
-        }
 
-        uiState.networkErrorMessage?.let { message ->
+                Text(
+                    text = stringResource(
+                        R.string.link_verification_description
+                    ),
+                    style =
+                        MaterialTheme.typography.bodyMedium,
+                    color =
+                        MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 6.dp)
+                )
+            }
+
             item {
                 InformationCard(
-                    title = "Check Unavailable"
+                    title = stringResource(
+                        R.string.link_before_check_title
+                    )
                 ) {
                     Text(
-                        text = message,
+                        text = stringResource(
+                            R.string.link_full_url_notice
+                        ),
+                        style =
+                            MaterialTheme.typography.bodyMedium
+                    )
+
+                    Text(
+                        text = stringResource(
+                            R.string
+                                .link_remove_personal_information
+                        ),
                         style =
                             MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(top = 10.dp)
+                    )
+
+                    Text(
+                        text = stringResource(
+                            R.string.link_limitations_notice
+                        ),
+                        style =
+                            MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(top = 10.dp)
+                    )
+                }
+            }
+
+            item {
+                OutlinedTextField(
+                    value = uiState.urlInput,
+                    onValueChange = onUrlInputChanged,
+                    label = {
+                        Text(
+                            text = stringResource(
+                                R.string.link_url_label
+                            )
+                        )
+                    },
+                    placeholder = {
+                        Text(
+                            text = stringResource(
+                                R.string.link_url_placeholder
+                            )
+                        )
+                    },
+                    supportingText = {
+                        Text(
+                            text = stringResource(
+                                R.string
+                                    .link_url_supporting_text
+                            )
+                        )
+                    },
+                    singleLine = true,
+                    enabled = !uiState.isLoading,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Uri,
+                        imeAction = ImeAction.Done
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            item {
+                ElevatedCard(
+                    onClick = {
+                        onConsentChanged(
+                            !uiState.hasConsent
+                        )
+                    },
+                    enabled = !uiState.isLoading,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .semantics(
+                            mergeDescendants = true
+                        ) {
+                            // Merge checkbox state and consent text.
+                        }
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        verticalAlignment =
+                            Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = uiState.hasConsent,
+                            onCheckedChange = null
+                        )
+
+                        Text(
+                            text = stringResource(
+                                R.string.link_consent_text
+                            ),
+                            style =
+                                MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(
+                                start = 8.dp
+                            )
+                        )
+                    }
+                }
+            }
+
+            uiState.validationMessage?.let { message ->
+                item {
+                    Text(
+                        text = message,
                         color =
                             MaterialTheme.colorScheme.error,
+                        style =
+                            MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.semantics {
                             liveRegion =
                                 LiveRegionMode.Assertive
@@ -210,57 +226,89 @@ fun LinkVerificationScreen(
                     )
                 }
             }
-        }
 
-        item {
-            Button(
-                onClick = onCheckUrl,
-                enabled = !uiState.isLoading,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                if (uiState.isLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(20.dp),
-                        strokeWidth = 2.dp
-                    )
-
-                    Text(
-                        text = "Checking...",
-                        modifier = Modifier.padding(
-                            start = 8.dp
+            uiState.networkErrorMessage?.let { message ->
+                item {
+                    InformationCard(
+                        title = stringResource(
+                            R.string.link_check_unavailable
                         )
-                    )
-                } else {
-                    Text(text = "Check URL")
-                }
-            }
-        }
-
-        uiState.result?.let { result ->
-            item {
-                Box(
-                    modifier = Modifier.semantics {
-                        liveRegion =
-                            LiveRegionMode.Polite
+                    ) {
+                        Text(
+                            text = message,
+                            style =
+                                MaterialTheme.typography.bodyMedium,
+                            color =
+                                MaterialTheme.colorScheme.error,
+                            modifier = Modifier.semantics {
+                                liveRegion =
+                                    LiveRegionMode.Assertive
+                            }
+                        )
                     }
-                ) {
-                    ResultContent(
-                        result = result,
-                        onClearResult = onClearResult
-                    )
                 }
             }
-        }
 
-        item {
-            InformationCard(
-                title = "Learning Reminder"
-            ) {
-                Text(
-                    text = "A link check is only one signal. Also verify the sender, domain spelling, request, urgency, and safest independent action.",
-                    style =
-                        MaterialTheme.typography.bodyMedium
-                )
+            item {
+                Button(
+                    onClick = onCheckUrl,
+                    enabled = !uiState.isLoading,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    if (uiState.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            strokeWidth = 2.dp
+                        )
+
+                        Text(
+                            text = stringResource(
+                                R.string.link_checking
+                            ),
+                            modifier = Modifier.padding(
+                                start = 8.dp
+                            )
+                        )
+                    } else {
+                        Text(
+                            text = stringResource(
+                                R.string.link_check_url
+                            )
+                        )
+                    }
+                }
+            }
+
+            uiState.result?.let { result ->
+                item {
+                    Box(
+                        modifier = Modifier.semantics {
+                            liveRegion =
+                                LiveRegionMode.Polite
+                        }
+                    ) {
+                        ResultContent(
+                            result = result,
+                            onClearResult = onClearResult
+                        )
+                    }
+                }
+            }
+
+            item {
+                InformationCard(
+                    title = stringResource(
+                        R.string.link_learning_reminder_title
+                    )
+                ) {
+                    Text(
+                        text = stringResource(
+                            R.string.link_learning_reminder
+                        ),
+                        style =
+                            MaterialTheme.typography.bodyMedium
+                    )
+                }
             }
         }
     }
@@ -274,10 +322,14 @@ private fun ResultContent(
     when (result) {
         LinkVerificationResult.ApiKeyMissing -> {
             InformationCard(
-                title = "API Key Not Configured"
+                title = stringResource(
+                    R.string.link_api_key_missing_title
+                )
             ) {
                 Text(
-                    text = "Add the Safe Browsing API key to local.properties and rebuild the app.",
+                    text = stringResource(
+                        R.string.link_api_key_missing_message
+                    ),
                     style =
                         MaterialTheme.typography.bodyMedium
                 )
@@ -286,7 +338,9 @@ private fun ResultContent(
 
         is LinkVerificationResult.NoKnownThreat -> {
             InformationCard(
-                title = "No Known Threat Match Found"
+                title = stringResource(
+                    R.string.link_no_known_threat_title
+                )
             ) {
                 Text(
                     text = result.domain,
@@ -297,14 +351,18 @@ private fun ResultContent(
                 )
 
                 Text(
-                    text = "Google Safe Browsing did not return a known threat match for this URL.",
+                    text = stringResource(
+                        R.string.link_no_known_threat_message
+                    ),
                     style =
                         MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(top = 10.dp)
                 )
 
                 Text(
-                    text = "This does not prove that the page is safe. Continue to verify the sender and purpose independently.",
+                    text = stringResource(
+                        R.string.link_no_safety_guarantee
+                    ),
                     style =
                         MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(top = 10.dp)
@@ -333,28 +391,31 @@ private fun PotentialThreatCard(
     val uriHandler = LocalUriHandler.current
 
     InformationCard(
-        title = "Potential Threat Match Found"
+        title = stringResource(
+            R.string.link_potential_threat_title
+        )
     ) {
         Text(
             text = result.domain,
-            style =
-                MaterialTheme.typography.titleMedium,
-            color =
-                MaterialTheme.colorScheme.error
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.error
         )
 
         Text(
-            text = "This URL may be associated with one or more known threat categories.",
-            style =
-                MaterialTheme.typography.bodyMedium,
+            text = stringResource(
+                R.string.link_potential_threat_message
+            ),
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(top = 10.dp)
         )
 
         result.threatTypes.forEach { threatType ->
             Text(
-                text = "• ${threatType.displayName()}",
-                style =
-                    MaterialTheme.typography.bodyMedium,
+                text = stringResource(
+                    R.string.link_threat_bullet_format,
+                    threatType.displayName()
+                ),
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(
                     start = 8.dp,
                     top = 6.dp
@@ -363,9 +424,10 @@ private fun PotentialThreatCard(
         }
 
         Text(
-            text = "Do not sign in, download files, or submit payment details. Verify the service through an official app or manually entered address.",
-            style =
-                MaterialTheme.typography.bodyMedium,
+            text = stringResource(
+                R.string.link_threat_safety_advice
+            ),
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(top = 12.dp)
         )
 
@@ -378,7 +440,9 @@ private fun PotentialThreatCard(
             modifier = Modifier.padding(top = 6.dp)
         ) {
             Text(
-                text = "Advisory provided by Google"
+                text = stringResource(
+                    R.string.link_google_advisory
+                )
             )
         }
 
@@ -398,7 +462,11 @@ private fun ClearResultButton(
             .fillMaxWidth()
             .padding(top = 12.dp)
     ) {
-        Text(text = "Check Another URL")
+        Text(
+            text = stringResource(
+                R.string.link_check_another_url
+            )
+        )
     }
 }
 
@@ -415,8 +483,7 @@ private fun InformationCard(
         ) {
             Text(
                 text = title,
-                style =
-                    MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium
             )
 
             Column(
@@ -427,26 +494,37 @@ private fun InformationCard(
     }
 }
 
+@Composable
 private fun String.displayName(): String {
+    val knownNameRes = knownThreatNameRes()
+
+    return if (knownNameRes != null) {
+        stringResource(knownNameRes)
+    } else {
+        lowercase()
+            .replace('_', ' ')
+            .replaceFirstChar { character ->
+                character.uppercase()
+            }
+    }
+}
+
+@StringRes
+private fun String.knownThreatNameRes(): Int? {
     return when (this) {
         "SOCIAL_ENGINEERING" ->
-            "Social engineering or phishing"
+            R.string.link_threat_social_engineering
 
         "MALWARE" ->
-            "Malware"
+            R.string.link_threat_malware
 
         "UNWANTED_SOFTWARE" ->
-            "Unwanted software"
+            R.string.link_threat_unwanted_software
 
         "POTENTIALLY_HARMFUL_APPLICATION" ->
-            "Potentially harmful application"
+            R.string.link_threat_harmful_application
 
-        else ->
-            lowercase()
-                .replace('_', ' ')
-                .replaceFirstChar { character ->
-                    character.uppercase()
-                }
+        else -> null
     }
 }
 
