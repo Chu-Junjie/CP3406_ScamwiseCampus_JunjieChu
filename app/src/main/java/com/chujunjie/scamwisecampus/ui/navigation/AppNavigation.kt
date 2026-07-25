@@ -2,18 +2,18 @@ package com.chujunjie.scamwisecampus.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.chujunjie.scamwisecampus.ui.screens.home.HomeRoute
+import com.chujunjie.scamwisecampus.ui.screens.linkverification.LinkVerificationRoute
 import com.chujunjie.scamwisecampus.ui.screens.practice.PracticeRoute
+import com.chujunjie.scamwisecampus.ui.screens.scenario.ScenarioActivityRoute
 import com.chujunjie.scamwisecampus.ui.screens.settings.SettingsRoute
 import com.chujunjie.scamwisecampus.ui.screens.statistics.StatisticsRoute
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
-import com.chujunjie.scamwisecampus.ui.screens.scenario.ScenarioActivityRoute
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import com.chujunjie.scamwisecampus.ui.screens.linkverification.LinkVerificationRoute
 
 @Composable
 fun AppNavigation(
@@ -34,18 +34,14 @@ fun AppNavigation(
                     )
                 },
                 onPracticeClick = {
-                    navController.navigate(
+                    navController.navigateToTopLevelDestination(
                         AppRoute.Practice.route
-                    ) {
-                        launchSingleTop = true
-                    }
+                    )
                 },
                 onStatisticsClick = {
-                    navController.navigate(
+                    navController.navigateToTopLevelDestination(
                         AppRoute.Statistics.route
-                    ) {
-                        launchSingleTop = true
-                    }
+                    )
                 },
                 onLinkVerificationClick = {
                     navController.navigate(
@@ -70,11 +66,9 @@ fun AppNavigation(
         composable(AppRoute.Statistics.route) {
             StatisticsRoute(
                 onPracticeClick = {
-                    navController.navigate(
+                    navController.navigateToTopLevelDestination(
                         AppRoute.Practice.route
-                    ) {
-                        launchSingleTop = true
-                    }
+                    )
                 }
             )
         }
@@ -112,39 +106,44 @@ fun AppNavigation(
                     navController.popBackStack()
                 },
                 onReturnToPractice = {
-                    navController.popBackStack(
-                        route = AppRoute.Practice.route,
-                        inclusive = false
-                    )
-                },
-                onReturnHome = {
-                    navController.navigate(AppRoute.Home.route) {
-                        popUpTo(
-                            navController.graph
-                                .findStartDestination()
-                                .id
+                    val returnedToExistingPractice =
+                        navController.popBackStack(
+                            route = AppRoute.Practice.route,
+                            inclusive = false
                         )
 
-                        launchSingleTop = true
+                    if (!returnedToExistingPractice) {
+                        navController.navigateToTopLevelDestination(
+                            AppRoute.Practice.route
+                        )
                     }
                 },
+                onReturnHome = {
+                    navController.navigateToTopLevelDestination(
+                        AppRoute.Home.route
+                    )
+                },
                 onViewStatistics = {
-                    navController.navigate(
+                    navController.navigateToTopLevelDestination(
                         AppRoute.Statistics.route
-                    ) {
-                        popUpTo(
-                            navController.graph
-                                .findStartDestination()
-                                .id
-                        ) {
-                            saveState = true
-                        }
-
-                        launchSingleTop = true
-                        restoreState = true
-                    }
+                    )
                 }
             )
         }
+    }
+}
+
+private fun NavHostController.navigateToTopLevelDestination(
+    route: String
+) {
+    navigate(route) {
+        popUpTo(
+            graph.findStartDestination().id
+        ) {
+            saveState = true
+        }
+
+        launchSingleTop = true
+        restoreState = true
     }
 }
