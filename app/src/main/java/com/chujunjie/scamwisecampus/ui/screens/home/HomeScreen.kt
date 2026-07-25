@@ -1,5 +1,6 @@
 package com.chujunjie.scamwisecampus.ui.screens.home
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -19,9 +20,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.chujunjie.scamwisecampus.R
 import com.chujunjie.scamwisecampus.domain.model.ConfidenceCalibration
 import com.chujunjie.scamwisecampus.domain.model.Difficulty
 import com.chujunjie.scamwisecampus.domain.model.ScamCategory
@@ -43,7 +46,7 @@ fun HomeScreen(
         when {
             uiState.isLoading -> {
                 HomeMessageContent(
-                    message = "Loading your learning dashboard...",
+                    message = stringResource(R.string.home_loading_dashboard),
                     showProgress = true,
                     modifier = Modifier.fillMaxSize()
                 )
@@ -91,7 +94,7 @@ private fun HomeDashboard(
     ) {
         item {
             Text(
-                text = "ScamWise Campus",
+                text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.semantics {
                     heading()
@@ -99,14 +102,14 @@ private fun HomeDashboard(
             )
 
             Text(
-                text = "Pause. Check. Protect.",
+                text = stringResource(R.string.home_tagline),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(top = 4.dp)
             )
 
             Text(
-                text = "Practise realistic digital decisions and build safer judgement.",
+                text = stringResource(R.string.home_description),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 8.dp)
@@ -132,15 +135,20 @@ private fun HomeDashboard(
         uiState.latestAttempt?.let { attempt ->
             item {
                 DashboardCard(
-                    title = "Latest Result"
+                    title = stringResource(R.string.home_latest_result_title)
                 ) {
                     SummaryRow(
-                        label = attempt.category.displayName(),
-                        value = "${attempt.totalScore} / 100"
+                        label = stringResource(attempt.category.displayNameRes()),
+                        value = stringResource(
+                            R.string.score_out_of_100,
+                            attempt.totalScore
+                        )
                     )
 
                     Text(
-                        text = attempt.confidenceCalibration.displayName(),
+                        text = stringResource(
+                            attempt.confidenceCalibration.displayNameRes()
+                        ),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = 10.dp)
@@ -151,13 +159,17 @@ private fun HomeDashboard(
 
         item {
             DashboardCard(
-                title = "Quick Actions"
+                title = stringResource(R.string.home_quick_actions_title)
             ) {
                 Button(
                     onClick = onPracticeClick,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Browse All Scenarios")
+                    Text(
+                        text = stringResource(
+                            R.string.home_browse_all_scenarios
+                        )
+                    )
                 }
 
                 OutlinedButton(
@@ -166,7 +178,11 @@ private fun HomeDashboard(
                         .fillMaxWidth()
                         .padding(top = 12.dp)
                 ) {
-                    Text(text = "View Statistics")
+                    Text(
+                        text = stringResource(
+                            R.string.home_view_statistics
+                        )
+                    )
                 }
 
                 OutlinedButton(
@@ -175,17 +191,21 @@ private fun HomeDashboard(
                         .fillMaxWidth()
                         .padding(top = 12.dp)
                 ) {
-                    Text(text = "Open Link Verification Lab")
+                    Text(
+                        text = stringResource(
+                            R.string.home_open_link_verification
+                        )
+                    )
                 }
             }
         }
 
         item {
             DashboardCard(
-                title = "Privacy by Design"
+                title = stringResource(R.string.home_privacy_title)
             ) {
                 Text(
-                    text = "No account is required. Practice history stays in the app's private local storage and can be cleared from Settings.",
+                    text = stringResource(R.string.home_privacy_description),
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
@@ -198,25 +218,32 @@ private fun ProgressCard(
     uiState: HomeUiState
 ) {
     DashboardCard(
-        title = "Learning Progress"
+        title = stringResource(R.string.home_learning_progress_title)
     ) {
         SummaryRow(
-            label = "Completed attempts",
+            label = stringResource(R.string.home_completed_attempts),
             value = uiState.totalAttempts.toString()
         )
 
         SummaryRow(
-            label = "Unique scenarios",
-            value = "${uiState.completedScenarioCount} / ${uiState.totalScenarioCount}",
+            label = stringResource(R.string.home_unique_scenarios),
+            value = stringResource(
+                R.string.fraction_format,
+                uiState.completedScenarioCount,
+                uiState.totalScenarioCount
+            ),
             modifier = Modifier.padding(top = 10.dp)
         )
 
         SummaryRow(
-            label = "Average score",
+            label = stringResource(R.string.home_average_score),
             value = if (uiState.totalAttempts == 0) {
-                "Not available"
+                stringResource(R.string.common_not_available)
             } else {
-                "${uiState.averageScore} / 100"
+                stringResource(
+                    R.string.score_out_of_100,
+                    uiState.averageScore
+                )
             },
             modifier = Modifier.padding(top = 10.dp)
         )
@@ -231,7 +258,10 @@ private fun ProgressCard(
         )
 
         Text(
-            text = "${uiState.completionPercent}% of scenarios attempted",
+            text = stringResource(
+                R.string.home_completion_percent,
+                uiState.completionPercent
+            ),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 8.dp)
@@ -253,9 +283,9 @@ private fun RecommendationCard(
         ) {
             Text(
                 text = if (hasAttemptHistory) {
-                    "Adaptive Practice Recommendation"
+                    stringResource(R.string.home_adaptive_recommendation)
                 } else {
-                    "Start Your First Practice"
+                    stringResource(R.string.home_start_first_practice)
                 },
                 style = MaterialTheme.typography.titleMedium
             )
@@ -267,7 +297,11 @@ private fun RecommendationCard(
             )
 
             Text(
-                text = "${scenario.category.displayName()} • ${scenario.difficulty.displayName()}",
+                text = stringResource(
+                    R.string.scenario_category_difficulty_format,
+                    stringResource(scenario.category.displayNameRes()),
+                    stringResource(scenario.difficulty.displayNameRes())
+                ),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(top = 6.dp)
@@ -275,9 +309,9 @@ private fun RecommendationCard(
 
             Text(
                 text = if (hasAttemptHistory) {
-                    "Recommended from your lowest-scoring practised category and least-practised scenario."
+                    stringResource(R.string.home_recommendation_existing)
                 } else {
-                    "Begin with an easy scenario to learn the four-step decision process."
+                    stringResource(R.string.home_recommendation_new)
                 },
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -290,7 +324,11 @@ private fun RecommendationCard(
                     .fillMaxWidth()
                     .padding(top = 16.dp)
             ) {
-                Text(text = "Start Recommended Practice")
+                Text(
+                    text = stringResource(
+                        R.string.home_start_recommended_practice
+                    )
+                )
             }
         }
     }
@@ -371,40 +409,43 @@ private fun HomeMessageContent(
     }
 }
 
-private fun ScamCategory.displayName(): String {
+@StringRes
+private fun ScamCategory.displayNameRes(): Int {
     return when (this) {
-        ScamCategory.JOB -> "Job"
-        ScamCategory.BANKING -> "Banking"
-        ScamCategory.PARCEL -> "Parcel"
-        ScamCategory.MARKETPLACE -> "Marketplace"
-        ScamCategory.IMPERSONATION -> "Impersonation"
-        ScamCategory.PHISHING -> "Phishing"
+        ScamCategory.JOB -> R.string.category_job
+        ScamCategory.BANKING -> R.string.category_banking
+        ScamCategory.PARCEL -> R.string.category_parcel
+        ScamCategory.MARKETPLACE -> R.string.category_marketplace
+        ScamCategory.IMPERSONATION -> R.string.category_impersonation
+        ScamCategory.PHISHING -> R.string.category_phishing
     }
 }
 
-private fun Difficulty.displayName(): String {
+@StringRes
+private fun Difficulty.displayNameRes(): Int {
     return when (this) {
-        Difficulty.EASY -> "Easy"
-        Difficulty.MEDIUM -> "Medium"
-        Difficulty.HARD -> "Hard"
+        Difficulty.EASY -> R.string.difficulty_easy
+        Difficulty.MEDIUM -> R.string.difficulty_medium
+        Difficulty.HARD -> R.string.difficulty_hard
     }
 }
 
-private fun ConfidenceCalibration.displayName(): String {
+@StringRes
+private fun ConfidenceCalibration.displayNameRes(): Int {
     return when (this) {
         ConfidenceCalibration.WELL_CALIBRATED ->
-            "Well Calibrated"
+            R.string.calibration_well_calibrated
 
         ConfidenceCalibration.UNDERCONFIDENT ->
-            "Underconfident"
+            R.string.calibration_underconfident
 
         ConfidenceCalibration.OVERCONFIDENT ->
-            "Overconfident"
+            R.string.calibration_overconfident
 
         ConfidenceCalibration.NEEDS_REVIEW ->
-            "Needs Review"
+            R.string.calibration_needs_review
 
         ConfidenceCalibration.CAUTIOUS_BUT_INCORRECT ->
-            "Cautious but Incorrect"
+            R.string.calibration_cautious_but_incorrect
     }
 }

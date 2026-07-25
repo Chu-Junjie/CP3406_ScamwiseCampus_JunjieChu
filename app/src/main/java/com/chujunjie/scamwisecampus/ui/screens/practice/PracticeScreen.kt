@@ -1,5 +1,6 @@
 package com.chujunjie.scamwisecampus.ui.screens.practice
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,10 +20,13 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.chujunjie.scamwisecampus.R
 import com.chujunjie.scamwisecampus.domain.model.Difficulty
 import com.chujunjie.scamwisecampus.domain.model.ScamCategory
 import com.chujunjie.scamwisecampus.domain.model.Scenario
@@ -51,7 +55,7 @@ fun PracticeScreen(
                     .padding(horizontal = 16.dp)
             ) {
                 Text(
-                    text = "Practice",
+                    text = stringResource(R.string.practice_title),
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.semantics {
                         heading()
@@ -59,14 +63,14 @@ fun PracticeScreen(
                 )
 
                 Text(
-                    text = "Build safer digital judgement through realistic scenarios.",
+                    text = stringResource(R.string.practice_description),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 4.dp)
                 )
 
                 Text(
-                    text = "Category",
+                    text = stringResource(R.string.practice_category_label),
                     style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.padding(top = 20.dp)
                 )
@@ -78,7 +82,7 @@ fun PracticeScreen(
                 )
 
                 Text(
-                    text = "Difficulty",
+                    text = stringResource(R.string.practice_difficulty_label),
                     style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.padding(top = 16.dp)
                 )
@@ -97,7 +101,11 @@ fun PracticeScreen(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "${uiState.scenarios.size} scenarios",
+                        text = pluralStringResource(
+                            R.plurals.practice_scenario_count,
+                            uiState.scenarios.size,
+                            uiState.scenarios.size
+                        ),
                         style = MaterialTheme.typography.titleMedium
                     )
 
@@ -108,7 +116,11 @@ fun PracticeScreen(
                         TextButton(
                             onClick = onClearFilters
                         ) {
-                            Text(text = "Clear Filters")
+                            Text(
+                                text = stringResource(
+                                    R.string.practice_clear_filters
+                                )
+                            )
                         }
                     }
                 }
@@ -142,7 +154,7 @@ private fun LoadingContent(
         CircularProgressIndicator()
 
         Text(
-            text = "Loading practice scenarios...",
+            text = stringResource(R.string.practice_loading_scenarios),
             modifier = Modifier.padding(top = 16.dp)
         )
     }
@@ -165,7 +177,7 @@ private fun CategoryFilterRow(
                     onCategorySelected(null)
                 },
                 label = {
-                    Text(text = "All")
+                    Text(text = stringResource(R.string.practice_all))
                 }
             )
         }
@@ -180,7 +192,7 @@ private fun CategoryFilterRow(
                     onCategorySelected(category)
                 },
                 label = {
-                    Text(text = category.displayName())
+                    Text(text = stringResource(category.displayNameRes()))
                 }
             )
         }
@@ -204,7 +216,7 @@ private fun DifficultyFilterRow(
                     onDifficultySelected(null)
                 },
                 label = {
-                    Text(text = "All")
+                    Text(text = stringResource(R.string.practice_all))
                 }
             )
         }
@@ -219,7 +231,7 @@ private fun DifficultyFilterRow(
                     onDifficultySelected(difficulty)
                 },
                 label = {
-                    Text(text = difficulty.displayName())
+                    Text(text = stringResource(difficulty.displayNameRes()))
                 }
             )
         }
@@ -270,14 +282,21 @@ private fun ScenarioCard(
             )
 
             Text(
-                text = "${scenario.category.displayName()} • ${scenario.difficulty.displayName()}",
+                text = stringResource(
+                    R.string.scenario_category_difficulty_format,
+                    stringResource(scenario.category.displayNameRes()),
+                    stringResource(scenario.difficulty.displayNameRes())
+                ),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(top = 4.dp)
             )
 
             Text(
-                text = "From: ${scenario.sender}",
+                text = stringResource(
+                    R.string.practice_sender_format,
+                    scenario.sender
+                ),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 12.dp)
@@ -305,7 +324,7 @@ private fun EmptyPracticeContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "No scenarios match the selected filters.",
+            text = stringResource(R.string.practice_no_matching_scenarios),
             style = MaterialTheme.typography.bodyLarge
         )
 
@@ -313,26 +332,28 @@ private fun EmptyPracticeContent(
             onClick = onClearFilters,
             modifier = Modifier.padding(top = 8.dp)
         ) {
-            Text(text = "Clear Filters")
+            Text(text = stringResource(R.string.practice_clear_filters))
         }
     }
 }
 
-private fun ScamCategory.displayName(): String {
+@StringRes
+private fun ScamCategory.displayNameRes(): Int {
     return when (this) {
-        ScamCategory.JOB -> "Job"
-        ScamCategory.BANKING -> "Banking"
-        ScamCategory.PARCEL -> "Parcel"
-        ScamCategory.MARKETPLACE -> "Marketplace"
-        ScamCategory.IMPERSONATION -> "Impersonation"
-        ScamCategory.PHISHING -> "Phishing"
+        ScamCategory.JOB -> R.string.category_job
+        ScamCategory.BANKING -> R.string.category_banking
+        ScamCategory.PARCEL -> R.string.category_parcel
+        ScamCategory.MARKETPLACE -> R.string.category_marketplace
+        ScamCategory.IMPERSONATION -> R.string.category_impersonation
+        ScamCategory.PHISHING -> R.string.category_phishing
     }
 }
 
-private fun Difficulty.displayName(): String {
+@StringRes
+private fun Difficulty.displayNameRes(): Int {
     return when (this) {
-        Difficulty.EASY -> "Easy"
-        Difficulty.MEDIUM -> "Medium"
-        Difficulty.HARD -> "Hard"
+        Difficulty.EASY -> R.string.difficulty_easy
+        Difficulty.MEDIUM -> R.string.difficulty_medium
+        Difficulty.HARD -> R.string.difficulty_hard
     }
 }

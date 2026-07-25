@@ -5,4 +5,64 @@
     <string name="navigation_practice">Practice</string>
     <string name="navigation_statistics">Statistics</string>
     <string name="navigation_settings">Settings</string>
+    <string name="home_loading_dashboard">Loading your learning dashboard...</string>
+    <string name="home_tagline">Pause. Check. Protect.</string>
+    <string name="home_description">Practise realistic digital decisions and build safer judgement.</string>
+
+    <string name="home_latest_result_title">Latest Result</string>
+    <string name="home_quick_actions_title">Quick Actions</string>
+    <string name="home_browse_all_scenarios">Browse All Scenarios</string>
+    <string name="home_view_statistics">View Statistics</string>
+    <string name="home_open_link_verification">Open Link Verification Lab</string>
+
+    <string name="home_privacy_title">Privacy by Design</string>
+    <string name="home_privacy_description">No account is required. Practice history stays in the app\'s private local storage and can be cleared from Settings.</string>
+
+    <string name="home_learning_progress_title">Learning Progress</string>
+    <string name="home_completed_attempts">Completed attempts</string>
+    <string name="home_unique_scenarios">Unique scenarios</string>
+    <string name="home_average_score">Average score</string>
+    <string name="home_completion_percent">%1$d%% of scenarios attempted</string>
+
+    <string name="home_adaptive_recommendation">Adaptive Practice Recommendation</string>
+    <string name="home_start_first_practice">Start Your First Practice</string>
+    <string name="home_recommendation_existing">Recommended from your lowest-scoring practised category and least-practised scenario.</string>
+    <string name="home_recommendation_new">Begin with an easy scenario to learn the four-step decision process.</string>
+    <string name="home_start_recommended_practice">Start Recommended Practice</string>
+
+    <string name="common_not_available">Not available</string>
+    <string name="score_out_of_100">%1$d / 100</string>
+    <string name="fraction_format">%1$d / %2$d</string>
+    <string name="scenario_category_difficulty_format">%1$s 鈥?%2$s</string>
+
+    <string name="category_job">Job</string>
+    <string name="category_banking">Banking</string>
+    <string name="category_parcel">Parcel</string>
+    <string name="category_marketplace">Marketplace</string>
+    <string name="category_impersonation">Impersonation</string>
+    <string name="category_phishing">Phishing</string>
+
+    <string name="difficulty_easy">Easy</string>
+    <string name="difficulty_medium">Medium</string>
+    <string name="difficulty_hard">Hard</string>
+
+    <string name="calibration_well_calibrated">Well Calibrated</string>
+    <string name="calibration_underconfident">Underconfident</string>
+    <string name="calibration_overconfident">Overconfident</string>
+    <string name="calibration_needs_review">Needs Review</string>
+    <string name="calibration_cautious_but_incorrect">Cautious but Incorrect</string>
+    <string name="practice_title">Practice</string>
+    <string name="practice_description">Build safer digital judgement through realistic scenarios.</string>
+    <string name="practice_category_label">Category</string>
+    <string name="practice_difficulty_label">Difficulty</string>
+    <string name="practice_clear_filters">Clear Filters</string>
+    <string name="practice_loading_scenarios">Loading practice scenarios...</string>
+    <string name="practice_all">All</string>
+    <string name="practice_sender_format">From: %1$s</string>
+    <string name="practice_no_matching_scenarios">No scenarios match the selected filters.</string>
+
+    <plurals name="practice_scenario_count">
+        <item quantity="one">%1$d scenario</item>
+        <item quantity="other">%1$d scenarios</item>
+    </plurals>
 </resources>
