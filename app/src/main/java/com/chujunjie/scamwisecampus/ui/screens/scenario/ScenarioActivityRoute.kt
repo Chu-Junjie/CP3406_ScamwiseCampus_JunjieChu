@@ -1,5 +1,6 @@
 package com.chujunjie.scamwisecampus.ui.screens.scenario
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -21,24 +22,36 @@ fun ScenarioActivityRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val handleBack: () -> Unit = {
+        val movedWithinScenario =
+            uiState.evaluation == null &&
+                    !uiState.isLoading &&
+                    !uiState.isScenarioMissing &&
+                    uiState.scenario != null &&
+                    viewModel.moveToPreviousStep()
+
+        if (!movedWithinScenario) {
+            onNavigateBack()
+        }
+    }
+
+    BackHandler(
+        onBack = handleBack
+    )
+
     ScenarioActivityScreen(
         uiState = uiState,
         onRiskLevelSelected = viewModel::selectRiskLevel,
         onWarningSignToggled = viewModel::toggleWarningSign,
-        onNoWarningSignsSelected = viewModel::selectNoWarningSigns,
+        onNoWarningSignsSelected =
+            viewModel::selectNoWarningSigns,
         onActionSelected = viewModel::selectAction,
-        onConfidenceSelected = viewModel::selectConfidence,
+        onConfidenceSelected =
+            viewModel::selectConfidence,
         onContinue = viewModel::continueToNextStep,
         onSubmit = viewModel::submitAttempt,
         onRestart = viewModel::restartScenario,
-        onBack = {
-            val movedToPreviousStep =
-                viewModel.moveToPreviousStep()
-
-            if (!movedToPreviousStep) {
-                onNavigateBack()
-            }
-        },
+        onBack = handleBack,
         onReturnToPractice = onReturnToPractice,
         onReturnHome = onReturnHome,
         onViewStatistics = onViewStatistics
