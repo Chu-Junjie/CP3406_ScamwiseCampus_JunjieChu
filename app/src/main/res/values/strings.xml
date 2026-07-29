@@ -126,7 +126,7 @@
     <string name="result_missed_warning_signs">Missed warning signs:</string>
     <string name="result_incorrectly_selected">Incorrectly selected:</string>
     <string name="result_all_warning_signs_correct">You identified all warning signs correctly.</string>
-    <string name="result_bullet_format">閳?%1$s</string>
+    <string name="result_bullet_format">• %1$s</string>
 
     <string name="calibration_description_well_calibrated">Your confidence matched a strong answer.</string>
     <string name="calibration_description_underconfident">Your answer was strong, but you may be underestimating your judgement.</string>
@@ -232,7 +232,7 @@
     <string name="link_threat_safety_advice">Do not sign in, download files, or submit payment details. Verify the service through an official app or manually entered address.</string>
     <string name="link_google_advisory">Advisory provided by Google</string>
     <string name="link_check_another_url">Check Another URL</string>
-    <string name="link_threat_bullet_format">閳?%1$s</string>
+    <string name="link_threat_bullet_format">• %1$s</string>
 
     <string name="link_threat_social_engineering">Social engineering or phishing</string>
     <string name="link_threat_malware">Malware</string>
