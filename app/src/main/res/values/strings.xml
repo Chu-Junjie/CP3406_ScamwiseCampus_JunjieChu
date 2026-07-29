@@ -29,6 +29,7 @@
     <string name="home_recommendation_existing">Recommended from your lowest-scoring practised category and least-practised scenario.</string>
     <string name="home_recommendation_new">Begin with an easy scenario to learn the four-step decision process.</string>
     <string name="home_start_recommended_practice">Start Recommended Practice</string>
+    <string name="home_hero_content_description">ScamWise Campus illustration showing a student recognising scam warnings and suspicious links</string>
 
     <string name="common_not_available">Not available</string>
     <string name="score_out_of_100">%1$d / 100</string>
