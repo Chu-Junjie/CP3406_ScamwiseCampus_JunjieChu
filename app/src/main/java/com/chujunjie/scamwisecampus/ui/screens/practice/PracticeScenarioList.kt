@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.chujunjie.scamwisecampus.R
 import com.chujunjie.scamwisecampus.domain.model.Scenario
+import com.chujunjie.scamwisecampus.ui.components.ScenarioSourceLabel
 
 @Composable
 internal fun ScenarioList(
@@ -84,16 +85,10 @@ private fun ScenarioCard(
                 modifier = Modifier.padding(top = 4.dp)
             )
 
-            Text(
-                text = stringResource(
-                    R.string.practice_sender_format,
-                    scenario.sender
-                ),
-                style =
-                    MaterialTheme.typography.bodySmall,
-                color =
-                    MaterialTheme.colorScheme
-                        .onSurfaceVariant,
+            ScenarioSourceLabel(
+                sender = scenario.sender,
+                category = scenario.category,
+                showFromPrefix = true,
                 modifier = Modifier.padding(top = 12.dp)
             )
 

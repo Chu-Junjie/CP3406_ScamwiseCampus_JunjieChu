@@ -24,7 +24,9 @@ import androidx.compose.ui.unit.dp
 import com.chujunjie.scamwisecampus.R
 import com.chujunjie.scamwisecampus.domain.model.ConfidenceLevel
 import com.chujunjie.scamwisecampus.domain.model.RiskLevel
+import com.chujunjie.scamwisecampus.domain.model.ScamCategory
 import com.chujunjie.scamwisecampus.domain.model.Scenario
+import com.chujunjie.scamwisecampus.ui.components.ScenarioSourceLabel
 
 @Composable
 internal fun ScenarioQuestionScreen(
@@ -65,7 +67,8 @@ internal fun ScenarioQuestionScreen(
         item {
             ScenarioHeader(
                 title = scenario.title,
-                sender = scenario.sender
+                sender = scenario.sender,
+                category = scenario.category
             )
         }
 
@@ -124,7 +127,8 @@ internal fun ScenarioQuestionScreen(
 @Composable
 private fun ScenarioHeader(
     title: String,
-    sender: String
+    sender: String,
+    category: ScamCategory
 ) {
     Text(
         text = title,
@@ -134,11 +138,10 @@ private fun ScenarioHeader(
         }
     )
 
-    Text(
-        text = sender,
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.padding(top = 4.dp)
+    ScenarioSourceLabel(
+        sender = sender,
+        category = category,
+        modifier = Modifier.padding(top = 6.dp)
     )
 }
 
